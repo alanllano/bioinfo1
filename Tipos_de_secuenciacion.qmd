@@ -1,0 +1,134 @@
+---
+title: "Secuenciacion_clase2"
+author: "Alan Llano"
+format: pdf
+editor: visual
+---
+
+Bioinformatica/Semestre3/Clase2/Dr.Wilbert Gutierrez/Modelo_molusco/INB
+
+LAVIS: ssh -y aaviles\@ken.lavis.unam.mx  Contrasena: mne7Hbdf24
+
+<https://jerolon.github.io/Bioinformatica_I_2026/#recursos>
+
+------------------------------------------------------------------------
+
+# Tipos de secuencias
+
+- 1970s First generation
+- 2000s Second generations
+- 2010 Third generations (kind off)
+
+Sanger es una secuenciacion muy buena desde los años 70s y sigue vigenete.
+
+## Actividad 1. Entrar a Google Academic
+
+<https://scholar.google.com/?hl=es>
+
+- 624,000 salida de busquedas disponibles del metodo **Sanger sequencing**. 41.95%
+
+- 634,000 salida de busquedas disponibles del metodo **Ilumina sequencing. 42.62%**
+
+- 66,000 salida de busquedas disponibles del metodo **Ion Torrent sequencing. 4.43%**
+
+- 77,700 salida de busquedas disponibles del metodo PacBio **sequencing. 5.22%**
+
+- 85,700 salida de busquedas disponibles del metodo Oxford Nanopore **sequencing. 5. 76%**
+
+Busquedas totales= 1,487,400
+
+### Secuenciación Sanger
+
+Se le quita oxigeno a pentosa (didesoxipentosa) y se añadio cromoforo especifíco a cada base, osea verde a adenina, rojo citosina y así.
+
+Electroforencis para ordenarlas por tamaño (mas pesado arriba, menos abajo)
+
+5'AATG**C3'**\* (\* = cloroforo)
+
+5'CTA**C3'**\*
+
+5'CT**G 3'**\*
+
+5' G**A 3'** \*
+
+Tomas los finales y añades el cromóforo al final de cada base. Ejemplo: **CCGA.** Estos cromoforos se analizan con un lazer. Este se ocupa de corta longitud, alelos, mutaciones puntuales y mucha presición.
+
+Solo puede haber una hebra pura.
+
+### Secuencia Ilumina
+
+Ilumina utiliza tecnología de millones de amplificaciones en una placa, PCR.
+
+Amplificaciones de forma masiva, en lineas hay millones de posiciones de clusters a escala nano.
+
+Secuencia: Millones de hebras (fragmentos).
+
+Busca romper ADN en trozos pequenos ,despues ilumina vende adaptadores con un kit se les pega con su tecnologia a el nucleotido 3'
+
+El adaptador tiene una secuencia complementaria a algo que tiene la placa para que estos fragmentos se peguen.
+
+El adaptador sabe la coordenada que es complementaria en la placa.
+
+Adaptador: Secuencias cortas (si se sabe cuales son) tamano de un primer 20 pb se posicion en una forma aleatoria del fragmento en el 3' es como si fuera enlogacion. Cada placa tiene su codigo complementario que sabe ilumina.
+
+Como lo deteca:
+
+PCR de puente: necesita amplifiacr millones de veces una misma hebra, limitantes enlogando a 300 - 150 pb si enlonga mas y hace mas ciclos de enlongacion la hebra se rompe u otras cosas. Esto es para que no se pierda la senal.
+
+Oligos en placa.
+
+Una polimerasa genera grupos clusters, se libera la primera hebra generada y despues esa es la PCR de puente, busca en el vecino adicional una secuencia complementaria y asi termina en dos strands y se vuelven a unir a sus vecinos.
+
+Cadena iniciar, se produce la primera copia y se une como puesnte a otra y se repite exponenciamente, se impleneta cromoforos. La senal de un fluroforo hace millones de copias y al mismo tiempo pega fluroforos, liberando senal. En la complementaria se unene fluroforos para identificar.
+
+Si son 200 pb y tene que hacer 200 ciclos
+
+Dentro del protocolo estan delimitaos los ciclos. Errores sobreexpresamiento de clusters.
+
+Toma fotografias con los cloroforos e interpreta, washup la hebra complemtaria con cloroforos y empieza otra vez para archivo forward y reverse.
+
+### 
+
+### Iron Torrent
+
+No usa fluroforos.
+
+Ocupa nucleotidos y detecta el cambio de pH.
+
+Nucleotido solo tiene un proton de más , al adicionarse en la complementariedad se libera el proton cambiando pH de medio.
+
+Se ocupan anobits, posiciones de los barcodes para identificar los cambios en el pH, es muy sensible.
+
+### PacBio SMRT
+
+Lo esta leyendo en tiempo real, no rompe DNA.
+
+HiFi es de las versiones mas modernos.
+
+Detecta areas de Gc altas
+
+Ocupa nucleotidos por fluorecencia de uno 1kb a 50 kb de un promedio de 25 kb.
+
+DNA lo vuelve circular y lee varias veces la hebra para ser muy precisa. No pierde continudad porque no lo rompe. Te permite identificar metilaciones o maduracion de RNAm.o intrones.
+
+Detecta muy bien mutaciones debido a confiabilidad.
+
+### Oxford Nanopore
+
+Es un nanoporo que entra la hebra de DNA y la polimerasa le da parte de la hebra, hay disrupcion de corriente ionica,da medidas lo cambios en corriente electrica y expulsa la secuencia en el nano tubo al terminar.
+
+Tiene lata tasa de error, menor confiablidad de pacbio pero son SMRT porque no rompe DNA, no ocupa fluorecencia, usa nanoposillos.
+
+Longitud a Pac Bio.
+
+Minion es un secuenciador portable, ocupa nanopore, deteccion de cambio electrico voltaje ayuda para ir a expediciones de campo.
+
+### Actividad 1:
+
+![Actividad Sanger sequencing](images/IMG_0268.HEIC)
+
+![Sanger sequencing : cromoforos](images/IMG_0269-02.HEIC)
+
+## Actividad 2: 
+
+![Fasta:promedios](images/IMG_1649.heic)
