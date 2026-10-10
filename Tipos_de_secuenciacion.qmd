@@ -7,7 +7,7 @@ editor: visual
 
 Bioinformatica/Semestre3/Clase2/Dr.Wilbert Gutierrez/Modelo_molusco/INB
 
-LAVIS: ssh -y aaviles\@ken.lavis.unam.mx  Contrasena: mne7Hbdf24
+LAVIS: ssh -y aaviles\@ken.lavis.unam.mx  Contrasena: pwd
 
 <https://jerolon.github.io/Bioinformatica_I_2026/#recursos>
 
@@ -129,6 +129,48 @@ Minion es un secuenciador portable, ocupa nanopore, deteccion de cambio electric
 
 ![Sanger sequencing : cromoforos](images/IMG_0269-02.HEIC)
 
-## Actividad 2: 
+## Actividad 2:
 
 ![Fasta:promedios](images/IMG_1649.heic)
+
+------------------------------------------------------------------------
+
+# Clase 2
+
+## FastQC
+
+Herramienta en Linux para procesar secuencias, da calidad de estas mismas. **Byte -\> KB -\> MB -\> GB**. UNIX surge en los 70's y luego surge Mac y Linux.
+
+**Super computadora (LAVIS)**:
+
+- Energía Nuclear
+
+- Ciencias Biologícas
+
+- Diseño Industrial
+
+- Sismología
+
+- Predicción de clima
+
+- Modelos matemáticos
+
+**Terminal Shell**
+
+Ejecutar programas en lugar de realizar cálculos.
+
+**Los tres alfabetos**
+
+ADN -\> ARN -\> PROTEÍNA
+
+**Nucleótido diferente**
+
+Convención: Secuenciadores te pueden dar otras letras que no son AGTC debido a que puede que el DNA no es de calidad y puede ponerte una letra diferente como Y,M, etc. Además N para no lee.
+
+5'-\>3'
+
+3'-\>5' Reverse
+
+**De locus a proteínas**
+
+- Locus: Tiene más elementos que una secuencia codificante.
