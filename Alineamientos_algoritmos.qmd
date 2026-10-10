@@ -1,0 +1,869 @@
+---
+title: "Alineamineto y homología"
+author: "Alan Llano"
+format: docx
+editor: visual
+---
+
+Jerónimo Roberto Miranda Rodríguez :<https://jerolon.github.io/Bioinformatica_I_2026/contenido/03-alineamientos/>
+
+# **Algoritmos: Needleman–Wunsch y Smith–Waterman**
+
+**Richard Bellman** desarrolló la programación dinámica en los años cincuenta, en la RAND Corporation, para problemas de control y decisiones secuenciales. El principio es que un problema grande se resuelve combinando soluciones óptimas de subproblemas más chicos, y que esos subproblemas se resuelven una sola vez y se guardan en una tabla. Es justo lo que necesitamos: el mejor alineamiento de dos prefijos se construye a partir de los mejores alineamientos de prefijos más cortos.
+
+- **Richard Bellman**, RAND Corporation: un problema grande se resuelve combinando soluciones **óptimas de subproblemas** más chicos
+
+- Los algoritmos recursivos son elegantes, pero resuelven los problemas más chicos múltiples veces.
+
+- El truco de la programación dinámica es que cada subproblema se resuelve **una sola vez** y se guarda en una tabla
+
+- El nombre: *“dynamic programming”* para esconder que hacía matemáticas de un jefe con *“a pathological fear and hatred of the word research”* (Bellman, *Eye of the Hurricane*, 1984)
+
+## **Las matrices de Manhattan**
+
+Todos los caminos en este Manhattan recorren la misma distancia. Aquí con longitud nos referimos al número total de “atracciones” que va a recorrer un turista. El meollo de la solución no es calcular la longitud de todos los caminos posibles utilizando la formulación recursiva, porque calcularíamos varias veces (como en muchísimas) el mismo camino. En su lugar, vamos a llenar, para cada nodo, la longitud del camino más largo para llegar a él, y utilizando ese número, vamos a calcular el siguiente. Vamos a hacer una especie de sudoku en donde primero llenamos lo más fácil y luego, a partir de ahí, vamos resolviendo lo siguiente.
+
+Para escribirlo de una manera fácil de implementar, utilizaremos tres tablas ([Figura 2](https://jerolon.github.io/Bioinformatica_I_2026/contenido/03-alineamientos/algoritmos.html#fig-manhattan-dp)). Dos guardan los datos del problema: el peso de cada calle. `Derecha[i,j]` es lo que se ve caminando de (𝑖,𝑗) a (𝑖,𝑗 +1) y `Abajo[i,j]` es lo que se ve caminando de (𝑖,𝑗) a (𝑖 +1,𝑗). La tercera, 𝑠⁡\[𝑖,𝑗\], es la que vamos llenando: el máximo número de atracciones que se pueden ver al llegar al nodo (𝑖,𝑗). (Sí, para Mahattan puro no hay diagonales, pero es fácil ver que funcionaría con una tabla más.)
+
+Hay que tener cuidado con que las tres tienen dimensiones distintas. Con una cuadrícula de 𝑛 ×𝑚 cuadras hay (𝑛 +1)⁢(𝑚 +1) nodos, así que 𝑠 mide (𝑛 +1) ×(𝑚 +1); las calles horizontales son (𝑛 +1) ×𝑚 y las verticales 𝑛 ×(𝑚 +1).
+
+Los bordes se llenan primero porque no hay nada que decidir: a la primera fila sólo se llega caminando a la derecha, y a la primera columna sólo bajando, así que son sumas acumuladas. Para el resto, llegar a (𝑖,𝑗) sólo se puede desde arriba o desde la izquierda:
+
+𝑠⁡\[𝑖,𝑗\]=max⁡{𝑠⁡\[𝑖−1,𝑗\]+Abajo⁡\[𝑖−1,𝑗\]𝑠⁡\[𝑖,𝑗−1\]+Derecha⁡\[𝑖,𝑗−1\]
+
+![](https://jerolon.github.io/Bioinformatica_I_2026/figuras/sesion07/manhattan-tourist.svg)
+
+![](Documents/Captura%20de%20pantalla%202026-10-02%20a%20la(s)%2010.31.45.png)
+
+Cada celda cuesta una comparación, así que llenar la tabla cuesta 𝑂⁡(𝑛⁢𝑚) en vez de recorrer los (𝑛+𝑚𝑛) caminos.
+
+Falta una cosa para que esto sea un alineamiento: en Manhattan sólo hay dos movimientos, y en la cuadrícula de la sección 1 hay tres. Agregar una tercera matriz de pesos diagonales (n x m) (y una comparación más) es todo lo que separa al turista de Needleman–Wunsch.
+
+## **Llenar la matriz s(core) es una especie de sudoku**
+
+Primero lo fácil (los bordes, sumas acumuladas); luego, cada celda a partir de sus dos vecinas:
+
+𝑠\[𝑖,𝑗\]=max{𝑠\[𝑖−1,𝑗\]+Abajo\[𝑖−1,𝑗\]𝑠\[𝑖,𝑗−1\]+Derecha\[𝑖,𝑗−1\]
+
+**Tres tablas, tres tamaños**
+
+- 𝑠: (𝑛+1)×(𝑚+1)
+
+- `Derecha`: (𝑛+1)×𝑚
+
+- `Abajo`: 𝑛×(𝑚+1)
+
+**Costo**
+
+- Una comparación por celda
+
+- 𝑂(𝑛𝑚) en vez de (𝑛+𝑚𝑛) caminos
+
+Falta **una** cosa para que esto sea un alineamiento: la tercera tabla de pesos, la **diagonal**.
+
+### Se pueden ver como matrices
+
+m=5 (los valores horizontales): cada punto es un nodo o punto
+
+n=5 (los valores verticales): cada punto es un nodo o punto
+
+La matriz Manhattan se compone en la matriz derecha y la matriz de abajo:
+
+D -\> D= 7,22,125,82 = son 5 valores m=5
+
+| 7   | 22  | 125 | 32  |
+|-----|-----|-----|-----|
+| 2   | 3   |     |     |
+|     |     |     |     |
+|     |     |     |     |
+|     |     |     |     |
+
+Abajo \| aqui tambien son n 5 valores n=5
+
+\^
+
+Score(S): sumas los valores donde se va recorriendo el camino. s \[4,2\] seria el maximo de una de 2 posibilidades en posicion
+
+0 1
+
+| 0   | 7   | 29  |     |     |
+|-----|-----|-----|-----|-----|
+|     | 10  |     |     |     |
+|     |     |     |     |     |
+|     |     |     |     |     |
+|     |     |     |     |     |
+|     |     |     |     |     |
+
+# **Needleman–Wunsch: alineamiento global**
+
+## **1970, *J Mol Biol***
+
+"Cada camino es un alineamiento posible" (Jeron,2026)
+
+- Primer método de alineamiento de pares por programación dinámica
+
+- El *penalty factor*: *“a number subtracted for every gap made”*
+
+- Con gap lineal 𝑑 y matriz de sustitución 𝑠:
+
+𝐹(𝑖,𝑗)=max { 𝐹(𝑖−1,𝑗−1)+𝑠(𝑎𝑖,𝑏𝑗)
+
+{ 𝐹(𝑖−1,𝑗)−𝑑
+
+{ 𝐹(𝑖,𝑗−1)−𝑑
+
+Los tres términos son los tres vecinos de la cuadrícula: alinear 𝑎𝑖 con 𝑏𝑗, gap en una secuencia, gap en la otra.
+
+## **El inicio es crucial y difiere de Manhattan**
+
+𝐹(0,0)=0,𝐹(𝑖,0)=−𝑖⋅𝑑,𝐹(0,𝑗)=−𝑗⋅𝑑
+
+- La primera fila y la primera columna **acumulan** **penalización**
+
+- Que un alineamiento termine en la primer fila o columna significa haber insertado sólo gaps.
+
+- Queremos reflejar eso en el score
+
+## **Alineamiento óptimo es el camino más “largo”**
+
+\
+![](https://jerolon.github.io/Bioinformatica_I_2026/figuras/svg/fig02_nw_matriz.svg)
+
+En NW, comenzamos desde el final. La esquina inferior derecha. Vamos atrás por las flechas grises que marcan de cuál vecino vino el máximo. Terminamos siempre en la esquina opuesta.
+
+## **El traceback o la reconstrucción del algoritmo**
+
+- Arranca en 𝐹(𝑚,𝑛), la esquina inferior derecha; termina en 𝐹(0,0)
+
+- Se recorre hacia atrás siguiendo de qué vecino vino cada máximo
+
+- **Todo** el camino forma parte del alineamiento: eso es lo que significa “global”
+
+La existencia de empates entre vecinos es por la existencia de más de un alineamiento óptimo. En la práctica, podemos/queremos modificar los scores y criterios de desempate para que no ocurra.
+
+## **Con scores distintos cambia el óptimo**
+
+![](https://jerolon.github.io/Bioinformatica_I_2026/figuras/svg/fig02b_nw_matriz_transiciones.svg)
+
+- Mismo par, gap −1, pero transiciones baratas y transversiones caras
+
+- Sólo cambió la tabla `Diagonal`: el score baja a −0.262 y los óptimos pasan de tres a **dos**
+
+# **Smith–Waterman: alineamiento local**
+
+## **1981, tres páginas**
+
+Se alinean los que realmente tienen un inmpacto no todos
+
+- Otro problema: la **mejor subsecuencia común**, no las secuencias completas
+
+- Dos proteínas que comparten un dominio pero no el resto: la situación normal
+
+- El cero: *“a zero is included to prevent calculated negative similarity”*
+
+𝐻(𝑖,𝑗)=max⎧⎩⎨⎪⎪
+
+0
+
+𝐻(𝑖−1,𝑗−1)+𝑠(𝑎𝑖,𝑏𝑗)
+
+𝐻(𝑖−1,𝑗)−𝑑
+
+𝐻(𝑖,𝑗−1)−𝑑
+
+## **Los tres cambios acoplados**
+
+|                           | **Needleman–Wunsch** | **Smith–Waterman**         |
+|:---------------------|:-------------|:-----------------------------|
+| **Recurrencia**           | tres términos        | cuatro, con el 0           |
+| **Inicialización bordes** | 𝐹(𝑖,0)=−𝑖⋅𝑑          | 𝐻(𝑖,0)=0                   |
+| **Inicio del traceback**  | esquina 𝐹(𝑚,𝑛)       | máximo global de la matriz |
+| **Fin del traceback**     | origen 𝐹(0,0)        | primera celda con 0        |
+
+**Combinaciones:** Si agregamos el cero pero dejamos la inicialización con gaps acumulados, o arrancamos el traceback en la esquina, **no** se obtiene un alineamiento local.
+
+## **Global contra local: encuentre las diferencias**
+
+![](https://jerolon.github.io/Bioinformatica_I_2026/figuras/svg/fig03_nw_vs_sw.svg)
+
+## **Las variantes: bordes y máximos**
+
+![](https://jerolon.github.io/Bioinformatica_I_2026/figuras/svg/fig06_variantes.svg)
+
+- **Semi-global**: no cobra gaps terminales (una secuencia es subcadena de la otra)
+
+- **Overlap**: solapes entre reads, como en ensamblado
+
+- **Fitting**: una corta dentro de una larga
+
+Cómo leerlo: ej. Overlap, verde: alineamiento tiene que incluir el **FIN** de la **primera** secuencia. Ámbar: Alineamiento forzado a incluir **INICIO** de la segunda secuencia. ¿Cómo se vería Smith-Waterman?
+
+# **Penalizaciones de gap**
+
+## **Lineal contra afín**
+
+![](https://jerolon.github.io/Bioinformatica_I_2026/figuras/svg/fig04_gap_costos.svg)
+
+- Lineal, 𝛾(𝑘)=𝑘⋅𝑑: un indel de 10 residuos cobra **diez** eventos por uno solo
+
+- Afín, 𝛾(𝑘)=apertura+𝑘⋅extensión: abrir caro, extender barato → un gap largo antes que varios cortos
+
+  ## **Gotoh 1982: tres matrices, mismo O(mn)**
+
+![](https://jerolon.github.io/Bioinformatica_I_2026/figuras/svg/fig07_gotoh.svg)
+
+- 𝑀: caminos que terminan alineando dos residuos · 𝐼𝑥, 𝐼𝑦: los que terminan en gap en una u otra secuencia
+
+- Cada celda lee un vecino distinto y las tres se consultan entre sí
+
+------------------------------------------------------------------------
+
+## **El algoritmo en Python**
+
+Ya llenamos matrices con flechas en el pizarrón y en el papel; luego podemos dejar que EMBOSS las llene por nosotros. Entre una cosa y la otra, y para ver un poco de python, podemos hacer nuestra propia implementación comenzando por un problema un poco más simple la **subsecuencia común más larga** (*longest common subsequence*, LCS).
+
+Es más o menos Needleman–Wunsch con parámetros extra simples, cada *match* premia +1, y *mismatches* y *gaps* son 0. Al quitar los *penalties* es más fácil de ver el esqueleto que comparten todos los algoritmos de la mañana: matriz de puntajes, y una matriz de flechas para hacer backtracking. (Es el problema [BA5C](https://rosalind.info/problems/ba5c/) de Rosalind y está en el [capítulo 5.8](https://cogniterra.org/lesson/61855/step/6?unit=53519) del libro de Compeau y Pevzner).
+
+- **Input:** dos cadenas `s` y `t`.
+
+- **Output:** una subsecuencia común más larga de `s` y `t`. Puede existir más de una solución igual de larga; cualquiera es válida.
+
+  Una **subsecuencia** respeta el orden pero no exige contigüidad: `AT` es subsecuencia de `GACT` (saltándose la `G` y la `C`); una **subcadena**, en cambio, es contigua. Encontrar la subsecuencia común más larga es lo mismo que encontrar el alineamiento con el máximo número de matches.
+
+  Haremos dos funciones, una `lcsbacktrack` que llena la matriz de `puntajes` y anota, para cada celda, de dónde vino su máximo en una matriz llamada `backtrack`. La segunda función hace el backtrack, arranca en la esquina inferior derecha y hace el camino de regreso a través de las flechas re-construyendo la LCS en el proceso.
+
+  ### **Paso 1 · Inicialización de la matriz de puntajes y la matriz de “punteros” (flechas)**
+
+```{python}
+def lcs_backtrack(v, w):
+    n, m = len(v), len(w)
+    puntajes = [[0] * (m + 1) for _ in range(n + 1)]
+    backtrack = [[""] * (m + 1) for _ in range(n + 1)]#matriz back track de donde viene cada puntaje
+```
+
+Qué hace cada línea:
+
+- 2: `len(v)` es la longitud de la cadena; la asignación múltiple `n, m = ...` guarda las dos de un jalón.
+
+- 3: `[0] * (m + 1)` fabrica **un renglón**: una lista de `m + 1` ceros.
+
+- 3y4: `[... for _ in range(n + 1)]` repite esa fabricación `n + 1` veces y junta los renglones en una lista de listas: la matriz. El guion bajo `_` es una variable como cualquier otra; el nombre avisa que su valor no se usa, solo la repetición.
+
+- ¿Por qué `+ 1`? El renglón 0 y la columna 0 representan el **prefijo vacío**
+
+  ### **Paso 2 · Llenar la matriz de puntajes**
+
+  Seguimos dentro de la función (en python es importante la sangría):
+
+```{python}
+    for i in range(1, n + 1):
+        for j in range(1, m + 1):
+            match = 1 if v[i - 1] == w[j - 1] else 0
+            puntajes[i][j] = max(puntajes[i - 1][j],
+                                 puntajes[i][j - 1],
+                                 puntajes[i - 1][j - 1] + match)
+```
+
+- `range(1, n + 1)` produce `1, 2, …, n`: recorremos solo las celdas “reales”; el renglón 0 y la columna 0 ya están resueltos.
+
+- El renglón `i` corresponde a la letra `v[i - 1]`, porque la matriz cuenta desde 1 (por el prefijo vacío) y las cadenas de Python desde 0. Chequen su ejercicio en papel para entender el desfase
+
+- `1 if ... else 0` es un `if` de una línea: `match` vale 1 solo cuando las letras coinciden.
+
+- `max(...)` elige la mejor de las tres entradas, izquierda, abajo o diagonal. Es la parte recurrente porque la matriz apunta a sí mísma.
+
+Llenar la matriz cuesta `n × m` celdas: para dos secuencias de mil letras, un millón de operaciones. De ahí el O(nm) de la mañana.
+
+### **Paso 3 · Anotar la flecha ganadora al mismo tiempo**
+
+```{python}
+            if puntajes[i][j] == puntajes[i - 1][j]:
+                backtrack[i][j] = "↓"
+            elif puntajes[i][j] == puntajes[i][j - 1]:
+                backtrack[i][j] = "→"
+            else:
+                backtrack[i][j] = "↘"
+    return puntajes, backtrack
+```
+
+Recién calculado el máximo, preguntamos *quién* lo produjo y guardamos la flecha en la otra matriz. Un poco lo que estábamos haciendo a mano.
+
+**\
+Nota ¿Por qué el orden de los `if` importa?**
+
+| `Cone este orden de ifs estamos favoreciendo el desempate`. En los empates gana `↓` porque se pregunta primero. Por eso este código devuelve *una* LCS específica de las varias que puede haber; otro orden daría otra respuesta igual de válida.
+
+### **Paso 4 · Caminar de regreso**
+
+```{python}
+def output_lcs(backtrack, v, i, j):
+    lcs = []
+    # Traverse backwards until we hit the top or left edge of the matrix
+    while i > 0 and j > 0:
+        if backtrack[i][j] == "↓":
+            # The higher score came from above
+            i -= 1
+        elif backtrack[i][j] == "→":
+            # The higher score came from the left
+            j -= 1
+        elif backtrack[i][j] == "↘":
+            # Diagonal means the characters matched
+            # v or w, should be identical
+            lcs.append(v[i-1])
+            i -= 1
+            j -= 1
+    # Because we traversed from the end to the beginning, 
+    # we must reverse the collected characters to get the correct order
+    return "".join(reversed(lcs))
+```
+
+### **Véanlo con GACT contra ATG**
+
+Estamos viendo los valores de las matrices `backtrack` y `puntajes` con `v = "GACT"` (renglones) y `w = "ATG"` (columnas), puntaje y flecha de cada celda:
+
+|       |     | A   | T   | G   |
+|-------|-----|-----|-----|-----|
+|       | 0   | 0   | 0   | 0   |
+| **G** | 0   | ↓ 0 | ↓ 0 | ↘ 1 |
+| **A** | 0   | ↘ 1 | → 1 | ↓ 1 |
+| **C** | 0   | ↓ 1 | ↓ 1 | ↓ 1 |
+| **T** | 0   | ↓ 1 | ↘ 2 | → 2 |
+
+La esquina inferior derecha dice 2: la LCS mide dos letras. ¿Cuáles? A caminar. La esquina tiene `→`: muévanse a la izquierda, a la celda `↘ 2` del renglón T. Diagonal: esa celda aporta la **T** y salta al renglón C, columna A (`↓ 1`), que sube a la celda `↘ 1` del renglón A. Otra diagonal: aporta la **A** y salta al renglón G, columna 0 en el borde, se acabó. El camino pisó las letras en orden T, A; que en reversa, son la solución a LCS: **AT**.
+
+Comprueben dos o tres flechas de la tabla contra el paso 3: es el sudoku que acabamos de llenar en papel (con match = 1 y gaps = 0).
+
+### **Todo junto**
+
+El archivo completo, con la firma `longest_common_subsequence` que pide el autograder del curso en línea de Compeau y Pevzner (ojo: aquí la función principal `longest_common_subsequence` toma las cadenas s y t, y llama a las otras dos subrutinas):
+
+```{python}
+import sys
+from typing import List, Dict, Iterable, Tuple
+
+# Please do not remove package declarations because these are used by the autograder.
+
+sys.setrecursionlimit(10000)  # Don't delete! Asegura profundidad de recursión suficiente.
+
+
+def lcs_backtrack(v: str, w: str):
+    n, m = len(v), len(w)
+    puntajes = [[0] * (m + 1) for _ in range(n + 1)]
+    backtrack = [[""] * (m + 1) for _ in range(n + 1)]
+    for i in range(1, n + 1):
+        for j in range(1, m + 1):
+            match = 1 if v[i - 1] == w[j - 1] else 0
+            puntajes[i][j] = max(puntajes[i - 1][j],
+                                 puntajes[i][j - 1],
+                                 puntajes[i - 1][j - 1] + match)
+            if puntajes[i][j] == puntajes[i - 1][j]:
+                backtrack[i][j] = "↓"
+            elif puntajes[i][j] == puntajes[i][j - 1]:
+                backtrack[i][j] = "→"
+            else:
+                backtrack[i][j] = "↘"
+    return puntajes, backtrack
+
+
+def output_lcs(backtrack, v, i, j):
+    lcs = []
+    # Traverse backwards until we hit the top or left edge of the matrix
+    while i > 0 and j > 0:
+        if backtrack[i][j] == "↓":
+            # The higher score came from above
+            i -= 1
+        elif backtrack[i][j] == "→":
+            # The higher score came from the left
+            j -= 1
+        elif backtrack[i][j] == "↘":
+            # Diagonal means the characters matched
+            # v or w, should be identical, but w[j-1]
+            lcs.append(v[i-1])
+            i -= 1
+            j -= 1
+    # Because we traversed from the end to the beginning, 
+    # we must reverse the collected characters to get the correct order
+    return "".join(reversed(lcs))
+
+
+def longest_common_subsequence(s: str, t: str) -> str:
+    """
+    Calculate the longest common subsequence of two strings.
+    """
+    #Realmente no hace falta regresar la matriz puntajes
+    puntajes, backtrack = lcs_backtrack(s, t)
+    return output_lcs(backtrack, s, len(s), len(t))
+```
+
+También es importante que en la llamada final a `output_lcs` le damos el tamaño de s y t para que comience en la esquina inferior derecha.
+
+En el mismo `ken` funciona:
+
+```{python}
+nano lcs.py
+python3 lcs.py
+```
+
+Para probarlo, agreguen al final del archivo los siete pares de ejemplo del problema en python, o pueden poner el código en el ejercicio del libro (sin este último bloque).
+
+```{python}
+pares = [
+    ("GACT", "ATG"),       # esperado: AT
+    ("ACTGAG", "GACTGG"),  # esperado: ACTGG
+    ("AC", "AC"),          # esperado: AC
+    ("GGGGT", "CCCCT"),    # esperado: T
+    ("GCCCC", "GGGGG"),    # esperado: G
+    ("AA", "CGTGGAT"),     # esperado: A
+    ("GGTGACGT", "CT"),    # esperado: CT
+]
+for s, t in pares:
+    print(s, t, "->", longest_common_subsequence(s, t))
+```
+
+Este código reproduce exactamente las siete salidas esperadas (por el empate a favor de `↓`); si una variante suya devuelve otra subsecuencia **de la misma longitud**, también es correcta. Miren con cariño los pares 4 a 6: casi nada en común y aun así el algoritmo siempre devuelve algo.
+
+Para convertir esto en Needleman–Wunsch de verdad faltan dos cosas: puntajes de match/mismatch (una matriz de sustitución) y castigo por gap. Para volverlo Smith–Waterman, además, el cero de la recurrencia. Si nadie tiene dudas hasta aquí, podemos agregar las primeras dos cosas ahora.
+
+### **De LCS a Needleman–Wunsch: el alineamiento global**
+
+El [siguiente](https://cogniterra.org/lesson/61860/step/3?unit=53524) *Code Challenge* del libro el alineamineto global. En Rosalind es el problema [ba5e](https://rosalind.info/problems/ba5e/) (sort of, este último usa una matriz de puntaje (substitución)).
+
+- **Input:** un premio por match, un castigo por mismatch, un castigo por indel, y dos cadenas de nucleótidos.
+
+- **Output:** el puntaje máximo de alineamiento de las dos cadenas, seguido de un alineamiento que alcanza ese máximo. (De nuevo: puede haber varios alineamientos óptimos; cualquiera es válido.)
+
+Ojo con los signos: los castigos llegan como números **positivos** (“mismatch penalty 1”, “indel penalty 2”) y el que los resta es el código. En vez de una matriz de sustitución completa como BLOSUM62, este problema usa la más sencilla posible: un solo número para cualquier match y otro para cualquier mismatch.
+
+Sobre una copia del `lcs.py` que llamaremos `alineamiento_global.py` podemos modificar tres cosas.
+
+```{python}
+cp lcs.py alineamiento_global.py
+nano alineamiento_global.py
+```
+
+#### **Cambio 1 · Los bordes ya no son gratis**
+
+En LCS el renglón 0 y la columna 0 se quedaban en cero: los gaps antes de empezar no costaban. En el alineamiento global sí: estar en la celda `(i, 0)` significa haber consumido `i` letras de `v` contra nada (*i. e.* `i` gaps seguidos). Esto ya lo hicimos en papel.
+
+```{python}
+def alignment_backtrack(match_reward, mismatch_penalty, indel_penalty, v, w):
+    n, m = len(v), len(w)
+    puntajes = [[0] * (m + 1) for _ in range(n + 1)]
+    backtrack = [[""] * (m + 1) for _ in range(n + 1)]
+    for i in range(1, n + 1):
+        puntajes[i][0] = -i * indel_penalty
+        backtrack[i][0] = "↓"
+    for j in range(1, m + 1):
+        puntajes[0][j] = -j * indel_penalty
+        backtrack[0][j] = "→"
+```
+
+Y como los bordes ahora sí forman parte del camino (una racha de gaps al inicio), también llevan flecha: todo el borde izquierdo baja, todo el borde superior corre a la derecha.
+
+#### **Cambio 2 · Entran los scores al llenar la matriz y cambia el orden del if**
+
+```{python}
+    for i in range(1, n + 1):
+        for j in range(1, m + 1):
+            if v[i - 1] == w[j - 1]:
+                diagonal = puntajes[i - 1][j - 1] + match_reward
+            else:
+                diagonal = puntajes[i - 1][j - 1] - mismatch_penalty
+            puntajes[i][j] = max(puntajes[i - 1][j] - indel_penalty,
+                                 puntajes[i][j - 1] - indel_penalty,
+                                 diagonal)
+            if puntajes[i][j] == diagonal:
+                backtrack[i][j] = "↘"
+            elif puntajes[i][j] == puntajes[i - 1][j] - indel_penalty:
+                backtrack[i][j] = "↓"
+            else:
+                backtrack[i][j] = "→"
+    return puntajes, backtrack
+```
+
+- La diagonal ya no vale “+1 o nada”. Ahora es el valor de `+match_reward` si las letras coinciden y `-mismatch_penalty` si no. La guardamos en la variable `diagonal` porque se usa dos veces (la usamos en el `max` y en el `if`).
+
+- En este punto, podríamos modificar para que `diagonal` refleje el valor de una [matriz de sustitución](https://jerolon.github.io/Bioinformatica_I_2026/contenido/03-alineamientos/clase07-algoritmos.html#0) como PAM o Blosum. Simplemente, `diagonal = MatrizSust[i,j]`
+
+- Las entradas vertical y horizontal descuentan `indel_penalty`.
+
+- El orden de los `if` se volteó: la diagonal se pregunta **primero**. En LCS eso habría sido un bug porque una `↘` podía ser un *mismatch* que costara lo mismo que un gap (ambos 0) y metía en la respuesta una letra que no era común a las dos cadenas. Aquí, una `↘` es un *mismatch* es una columna perfectamente legal del alineamiento con su propio score (las dos letras, distintas, una sobre la otra). El orden ya solo decide los empates, es decir, *cuál* de los alineamientos óptimos sale.
+
+#### **Cambio 3 · El traceback escribe dos renglones**
+
+La caminata es la misma, pero cada flecha ya no aporta “una letra o nada”: aporta una **columna** completa del alineamiento, dos letras iguales en un match, dos letras diferentes en un mismatch o una letra y un “-” donde hay gaps.
+
+```{python}
+def output_alignment(backtrack, v, w, i, j):
+    alin_v, alin_w = [], []
+    while i > 0 or j > 0:
+        if backtrack[i][j] == "↓":      # gap en w
+            alin_v.append(v[i - 1])
+            alin_w.append("-")
+            i -= 1
+        elif  backtrack[i][j] == "→":    # gap en v
+            alin_v.append("-")
+            alin_w.append(w[j - 1])
+            j -= 1
+        else:                                      # columna alineada
+            alin_v.append(v[i - 1])
+            alin_w.append(w[j - 1])
+            i -= 1
+            j -= 1
+    alin_v.reverse()
+    alin_w.reverse()
+    return "".join(alin_v), "".join(alin_w)
+```
+
+- 1: También le pasamos i, j para decirle donde comenzar el traceback. Como es global, i,j sigue siendo la esquina inferior derecha.
+
+- 3: El caso base cambió: `i == 0 and j == 0`. En LCS, tocar cualquier borde era “se acabó”; aquí los bordes tienen flechas y hay que recorrerlos, escribiendo los gaps iniciales que ya pagamos en el cambio 1. La caminata solo termina en la esquina superior izquierda.
+
+- 4: `↓` escribe letra de `v` sobre un guion; 8: `→`, guion sobre letra de `w`; 12: `↘`, las dos letras, sean iguales o no.
+
+- 19: La función regresa **dos** cadenas a la vez
+
+El puntaje no hay que reconstruirlo: ya está en la esquina inferior derecha, `puntajes[n][m]`. Fíjense en el ejemplo de abajo: puede ser **negativo**. “El mejor alineamiento posible” no significa “un buen alineamiento” pues global obliga a pagar cada letra de las dos cadenas, que es justo lo que van a ver con `needle` en el ejercicio 3 de la parte de EMBOSS.
+
+#### **Véanlo con GAGA contra GAT**
+
+Premio 1, mismatch 1, indel 2 (el primer ejemplo del problema). La matriz, con puntaje y flecha:
+
+|       |      | G    | A    | T    |
+|-------|------|------|------|------|
+|       | 0    | → -2 | → -4 | → -6 |
+| **G** | ↓ -2 | ↘ 1  | → -1 | → -3 |
+| **A** | ↓ -4 | ↓ -1 | ↘ 2  | → 0  |
+| **G** | ↓ -6 | ↘ -3 | ↓ 0  | ↘ 1  |
+| **A** | ↓ -8 | ↓ -5 | ↘ -2 | ↘ -1 |
+
+Dos cosas nuevas respecto a la tabla de LCS: los bordes cuestan (la columna 0 baja de -2 en -2) y hay celdas negativas por todos lados. La esquina dice -1: ese es el puntaje. La caminata `↘` escribe la columna A/T (¡un desapareamiento!), `↓` escribe G/-, y dos `↘` más escriben A/A y G/G. Leído en reversa nos da el alineamiento global óptimo:
+
+```         
+GAGA
+GA-T
+```
+
+Existen varios empates: por ejemplo, en la esquina, bajar `↓` también explicaba el -1, y habría dado `GAGA` sobre `GAT-`. Mismo puntaje, otro alineamiento óptimo. El desempate es por el orden de los `if`.
+
+#### **Todo junto**
+
+La firma que pide el autograder es `global_alignment`, que regresa una tupla de tres: el puntaje y los dos renglones.
+
+```{python}
+import sys
+from typing import List, Dict, Tuple
+
+# Please do not remove package declarations because these are used by the autograder.
+
+sys.setrecursionlimit(10000)  # este esqueleto no lo traía: va por nuestra cuenta
+
+
+def alignment_backtrack(match_reward, mismatch_penalty, indel_penalty, v, w):
+    n, m = len(v), len(w)
+    puntajes = [[0] * (m + 1) for _ in range(n + 1)]
+    backtrack = [[""] * (m + 1) for _ in range(n + 1)]
+    for i in range(1, n + 1):
+        puntajes[i][0] = -i * indel_penalty
+        backtrack[i][0] = "↓"
+    for j in range(1, m + 1):
+        puntajes[0][j] = -j * indel_penalty
+        backtrack[0][j] = "→"
+    for i in range(1, n + 1):
+        for j in range(1, m + 1):
+            if v[i - 1] == w[j - 1]:
+                diagonal = puntajes[i - 1][j - 1] + match_reward
+            else:
+                diagonal = puntajes[i - 1][j - 1] - mismatch_penalty
+            puntajes[i][j] = max(puntajes[i - 1][j] - indel_penalty,
+                                 puntajes[i][j - 1] - indel_penalty,
+                                 diagonal)
+            if puntajes[i][j] == diagonal:
+                backtrack[i][j] = "↘"
+            elif puntajes[i][j] == puntajes[i - 1][j] - indel_penalty:
+                backtrack[i][j] = "↓"
+            else:
+                backtrack[i][j] = "→"
+    return puntajes, backtrack
+
+
+def output_alignment(backtrack, v, w, i, j):
+    alin_v, alin_w = [], []
+    while i > 0 or j > 0:
+        if j == 0 or backtrack[i][j] == "↓":      # gap en w
+            alin_v.append(v[i - 1])
+            alin_w.append("-")
+            i -= 1
+        elif i == 0 or backtrack[i][j] == "→":    # gap en v
+            alin_v.append("-")
+            alin_w.append(w[j - 1])
+            j -= 1
+        else:                                      # columna alineada
+            alin_v.append(v[i - 1])
+            alin_w.append(w[j - 1])
+            i -= 1
+            j -= 1
+    alin_v.reverse()
+    alin_w.reverse()
+    return "".join(alin_v), "".join(alin_w)
+  
+def global_alignment(match_reward: float, mismatch_penalty: float,
+                     indel_penalty: float, s: str, t: str) -> Tuple[float, str, str]:
+    """
+    Compute the global alignment of two strings based on given rewards and penalties. 
+    """
+    #Aquí necesitábamos puntajes sólo por la esquina inferior derecha
+    puntajes, backtrack = alignment_backtrack(match_reward, mismatch_penalty,
+                                              indel_penalty, s, t)
+    alin_s, alin_t = output_alignment(backtrack, s, t, len(s), len(t))
+    return puntajes[len(s)][len(t)], alin_s, alin_t
+```
+
+Para probar, los siete ejemplos del problema (cada caso imprime el puntaje y los dos renglones, el formato que pide el reto):
+
+```{python}
+casos = [
+    (1, 1, 2, "GAGA", "GAT"),        # -1: GAGA / GA-T
+    (1, 3, 1, "ACG", "ACT"),         # 0: AC-G / ACT-
+    (1, 1, 1, "AT", "AG"),           # 0: AT / AG
+    (2, 5, 1, "TCA", "CA"),          # 3: TCA / -CA
+    (1, 10, 1, "TTTTCCTT", "CC"),    # -4: TTTTCCTT / ----CC--
+    (2, 3, 2, "ACAGATTAG", "T"),     # -14: ACAGATTAG / -----T---
+    (3, 1, 2, "G", "ACATACGATG"),    # -15: ---------G / ACATACGATG
+]
+for match, mismatch, indel, s, t in casos:
+    puntaje, alin_s, alin_t = global_alignment(match, mismatch, indel, s, t)
+    print(puntaje)
+    print(alin_s)
+    print(alin_t)
+```
+
+```{python}
+python3 alineamiento_global.py
+```
+
+Seis de los siete casos reproducen exactamente la salida esperada. En el sexto, nuestro desempate aparea la `T` con la *otra* `T` de `ACAGATTAG` (`------T--` en vez de `-----T---`): mismo -14, igual de óptimo, y el autograder lo acepta. Si quieren más casos de prueba, el problema trae [datasets de depuración](https://bioinformaticsalgorithms.com/data/debugdatasets/alignment/GlobalAlignment.zip).
+
+### **De Needleman–Wunsch a Smith–Waterman: el alineamiento local**
+
+La última modificación para cumplir nuestros dos objetivos intuición e implementación de alineamientos globales y locales y sus diferencias. El *Code Challenge* correspondiente es [From Global to Local Alignment](https://cogniterra.org/lesson/61860/step/10?unit=53524) o [ba5f](https://rosalind.info/problems/ba5f/) en Rosalind.
+
+- **Input:** los mismos tres números y las dos cadenas.
+
+- **Output:** el alineamiento **local óptimo**, el alineamiento entre una subcadena de `s` y una subcadena de `t` con el máximo puntaje, precedido de dicho puntaje.
+
+Tres grandes modificaciones sobre `alineamiento_global.py`.
+
+```{python}
+cp alineamiento_global.py alineamiento_local.py
+nano alineamiento_locall.py
+```
+
+#### **Modificación 1 · El cero vuelve a entrar en los bordes y además en la recurrencia**
+
+Los bordes vuelven a quedarse en 0, como en LCS (los gaps antes de empezar ya no cuestan pues el alineamiento todavía no comienza), y el `max` gana un cuarto candidato: el 0. El libro lo explica como *free rides*: un uber gratis desde el inicio hasta cualquier celda.
+
+```{python}
+def local_backtrack(match_reward, mismatch_penalty, indel_penalty, v, w):
+    n, m = len(v), len(w)
+    puntajes = [[0] * (m + 1) for _ in range(n + 1)]
+    backtrack = [[""] * (m + 1) for _ in range(n + 1)]
+    # los bordes se quedan en 0 y sin flecha, como en LCS
+    for i in range(1, n + 1):
+        for j in range(1, m + 1):
+            if v[i - 1] == w[j - 1]:
+                diagonal = puntajes[i - 1][j - 1] + match_reward
+            else:
+                diagonal = puntajes[i - 1][j - 1] - mismatch_penalty
+            puntajes[i][j] = max(0,
+                                 puntajes[i - 1][j] - indel_penalty,
+                                 puntajes[i][j - 1] - indel_penalty,
+                                 diagonal)
+            if puntajes[i][j] == 0:
+                backtrack[i][j] = ""
+            elif puntajes[i][j] == diagonal:
+                backtrack[i][j] = "↘"
+            elif puntajes[i][j] == puntajes[i - 1][j] - indel_penalty:
+                backtrack[i][j] = "↓"
+            else:
+                backtrack[i][j] = "→"
+    return puntajes, backtrack
+```
+
+El términos técnicos: “si lo mejor que puedo hacer llegando hasta aquí es deber puntos, mejor nadota”. Que el alineamiento comience en esa celda. Por eso en lugar de flecha es la cadena vacía `""`, que es la misma con la que nació `backtrack`. En LCS y en global, `""` significaba “celda sin llenar”; aquí se convierte en una señal de **alto**. También fíjense que el `if` del 0 se pregunta primero: en un empate entre “empezar de nuevo” y “venir arrastrando un cero”, gana empezar de nuevo, y sale el más corto de los alineamientos óptimos.
+
+#### **Modificación 2 · El traceback se detiene en el cero**
+
+```{python}
+def output_local(backtrack, v, w, i, j):
+    alin_v, alin_w = [], []
+    while backtrack[i][j] != "":
+        if backtrack[i][j] == "↓":                # gap en w
+            alin_v.append(v[i - 1])
+            alin_w.append("-")
+            i -= 1
+        elif backtrack[i][j] == "→":              # gap en v
+            alin_v.append("-")
+            alin_w.append(w[j - 1])
+            j -= 1
+        else:                                      # columna alineada
+            alin_v.append(v[i - 1])
+            alin_w.append(w[j - 1])
+            i -= 1
+            j -= 1
+    alin_v.reverse()
+    alin_w.reverse()
+    return "".join(alin_v), "".join(alin_w)
+```
+
+En comparación con `output_alignment`, cambió el caso base. Ya no es “llegué a la esquina `(0, 0)`”, es “pisé cualquier celda sin flecha”, un borde donde el alineamiento empieza. Volvemos a pasarle como parámetros i,j las coordenadas donde comienza el backtrack, sin embargo, aquí sí pueden ser diferentes
+
+#### **Modificación 3 · Ya no empezamos en la esquina inferior derecha**
+
+En global, el alineamiento estaba obligado a consumir las dos cadenas completas, así que el puntaje máximo esperaba en `puntajes[n][m]`. En local el mejor alineamiento puede terminar donde sea: hay que **buscar** el máximo en toda la matriz.
+
+```{python}
+def local_alignment(match_reward: float, mismatch_penalty: float,
+                    indel_penalty: float, s: str, t: str) -> Tuple[float, str, str]:
+    """
+    Compute the local alignment of two strings based on match reward,
+    mismatch penalty, and indel penalty.
+    """
+    puntajes, backtrack = local_backtrack(match_reward, mismatch_penalty,
+                                          indel_penalty, s, t)
+    mejor, mejor_i, mejor_j = 0, 0, 0
+    for i in range(len(s) + 1):
+        for j in range(len(t) + 1):
+            if puntajes[i][j] > mejor:
+                mejor, mejor_i, mejor_j = puntajes[i][j], i, j
+    alin_s, alin_t = output_local(backtrack, s, t, mejor_i, mejor_j)
+    return mejor, alin_s, alin_t
+```
+
+- 9: `mejor` se inicializa en 0, no en menos infinito. Consecuencia: el resultado nunca es negativo, si ninguna región vale la pena, la respuesta es 0 con dos cadenas vacías. **Smith–Waterman nunca dice “no encontré nada”**.
+
+- 10: Otro par de `for` anidados barre la matriz completa; el `>` estricto se queda con el **primer** máximo que encuentra (otro desempate silencioso).
+
+  #### **El mismo par, otra pregunta**
+
+  `GAGA` contra `GAT` con premio 1, mismatch 1, indel 2 — exactamente el ejemplo de la sección global, el que dio -1. La matriz local:
+
+  |       |     | G   | A   | T   |
+  |-------|-----|-----|-----|-----|
+  |       | 0   | 0   | 0   | 0   |
+  | **G** | 0   | ↘ 1 | 0   | 0   |
+  | **A** | 0   | 0   | ↘ 2 | 0   |
+  | **G** | 0   | ↘ 1 | 0   | ↘ 1 |
+  | **A** | 0   | 0   | ↘ 2 | 0   |
+
+  Los negativos desaparecieron: donde global acumulaba deudas, local pone 0 y corta la flecha (las celdas sin flecha son esos ceros). El máximo de la matriz es 2 y no está en la esquina — de hecho está dos veces, una por cada `GA` de `GAGA`; el barrido se queda con el primero. La caminata: dos diagonales y un alto.
+
+  ```         
+  2
+  GA
+  GA
+  ```
+
+  Global, obligado a explicar las dos cadenas completas, pagó -1. Local, con permiso de ignorar lo que estorba, encontró +2. Es la misma matriz de fondo, pero la pregunta cambió: global pregunta “¿qué tanto se parecen estas dos cadenas?”; local, “¿cuál es la mejor región en común?”.
+
+  #### **Todo junto**
+
+  Acaban de escribir su propio `water`. El archivo completo, con la firma `local_alignment` del autograder:
+
+```{python}
+import sys
+from typing import List, Dict, Tuple
+
+# Please do not remove package declarations because these are used by the autograder.
+
+
+def local_backtrack(match_reward, mismatch_penalty, indel_penalty, v, w):
+    n, m = len(v), len(w)
+    puntajes = [[0] * (m + 1) for _ in range(n + 1)]
+    backtrack = [[""] * (m + 1) for _ in range(n + 1)]
+    for i in range(1, n + 1):
+        for j in range(1, m + 1):
+            if v[i - 1] == w[j - 1]:
+                diagonal = puntajes[i - 1][j - 1] + match_reward
+            else:
+                diagonal = puntajes[i - 1][j - 1] - mismatch_penalty
+            puntajes[i][j] = max(0,
+                                 puntajes[i - 1][j] - indel_penalty,
+                                 puntajes[i][j - 1] - indel_penalty,
+                                 diagonal)
+            if puntajes[i][j] == 0:
+                backtrack[i][j] = ""
+            elif puntajes[i][j] == diagonal:
+                backtrack[i][j] = "↘"
+            elif puntajes[i][j] == puntajes[i - 1][j] - indel_penalty:
+                backtrack[i][j] = "↓"
+            else:
+                backtrack[i][j] = "→"
+    return puntajes, backtrack
+
+
+def output_local(backtrack, v, w, i, j):
+    alin_v, alin_w = [], []
+    while backtrack[i][j] != "":
+        if backtrack[i][j] == "↓":                # gap en w
+            alin_v.append(v[i - 1])
+            alin_w.append("-")
+            i -= 1
+        elif backtrack[i][j] == "→":              # gap en v
+            alin_v.append("-")
+            alin_w.append(w[j - 1])
+            j -= 1
+        else:                                      # columna alineada
+            alin_v.append(v[i - 1])
+            alin_w.append(w[j - 1])
+            i -= 1
+            j -= 1
+    alin_v.reverse()
+    alin_w.reverse()
+    return "".join(alin_v), "".join(alin_w)
+
+
+def local_alignment(match_reward: float, mismatch_penalty: float,
+                    indel_penalty: float, s: str, t: str) -> Tuple[float, str, str]:
+    """
+    Compute the local alignment of two strings based on match reward,
+    mismatch penalty, and indel penalty.
+    """
+    puntajes, backtrack = local_backtrack(match_reward, mismatch_penalty,
+                                          indel_penalty, s, t)
+    mejor, mejor_i, mejor_j = 0, 0, 0
+    for i in range(len(s) + 1):
+        for j in range(len(t) + 1):
+            if puntajes[i][j] > mejor:
+                mejor, mejor_i, mejor_j = puntajes[i][j], i, j
+    alin_s, alin_t = output_local(backtrack, s, t, mejor_i, mejor_j)
+    return mejor, alin_s, alin_t
+```
+
+Las pruebas: los seis casos de los [datasets de depuración](https://bioinformaticsalgorithms.com/data/debugdatasets/alignment/LocalAlignment.zip) del problema, en el formato de siempre:
+
+```{python}
+casos = [
+    (1, 1, 2, "GAGA", "GAT"),           # 2: GA / GA
+    (3, 3, 1, "AGC", "ATC"),            # 4: A-GC / AT-C
+    (1, 1, 1, "AT", "AG"),              # 1: A / A
+    (1, 1, 1, "TAACG", "ACGTG"),        # 3: ACG / ACG
+    (3, 2, 1, "CAGAGATGGCCG", "ACG"),   # 6: CG / CG
+    (2, 3, 1, "CTT", "AGCATAAAGCATT"),  # 5: C-TT / CATT
+]
+for match, mismatch, indel, s, t in casos:
+    puntaje, alin_s, alin_t = local_alignment(match, mismatch, indel, s, t)
+    print(puntaje)
+    print(alin_s)
+    print(alin_t)
+```
+
+```{python}
+python3 alineamiento_local.py
+```
+
+Los seis reproducen exactamente la salida esperada. Dos interesantes: el caso 2 (`A-GC` sobre `AT-C`) recuerda que “local” no significa “sin gaps”, puede haber indels dentro de la región óptima. El caso 5, contra el `ACG` completo gana un `CG` pelón porque ninguna `A` de la cadena larga está lo bastante cerca del `CG` para que su premio pague el desvío.
+
+Una nota antes de pasar a las herramientas de verdad: `needle` y `water` usan el mismo esqueleto que acaban de escribir, con dos mejoras. Una **matriz de sustitución** completa (BLOSUM62: un puntaje por cada pareja de aminoácidos, en vez de un solo número para cualquier match y otro para cualquier mismatch) y el **gap afín**: abrir un gap cuesta caro (`-gapopen 10`) pero extenderlo cuesta poco (`-gapextend 0.5`), porque un solo evento evolutivo puede insertar o borrar varias letras de golpe. Por eso sus salidas de EMBOSS no van a coincidir número por número con las de sus scripts — pero el algoritmo de adentro es el que ya escribieron dos veces.
+
+## 
