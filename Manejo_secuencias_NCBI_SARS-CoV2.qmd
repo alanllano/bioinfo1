@@ -1,0 +1,814 @@
+---
+title: "Descargar Secuencias:Virus SARS-CoV2 causante de COVID-19 y E.coli"
+format: typst
+editor: visual
+---
+
+LAVIS: ssh -y aaviles\@ken.lavis.unam.mx Contraseña: mne7Hbdf24
+
+github:
+
+# Descargar Secuencias: SARS-CoV-2
+
+<https://www.ncbi.nlm.nih.gov/search/>
+
+1.  NCBI BioProject: **PRJNA750736** <https://www.ncbi.nlm.nih.gov/bioproject/>
+
+2.  SRA Experiments [256064](https://www.ncbi.nlm.nih.gov/sra?linkname=bioproject_sra_all&from_uid=750736) (secuencias crudas del BioProject).
+
+    <https://www.ncbi.nlm.nih.gov/sra?linkname=bioproject_sra_all&from_uid=750736>
+
+3.1. Send to (arriba de la pantalla)
+
+3.2. Run selector: Dar Go
+
+4.1. Ir a Metadata y Accession List
+
+<https://www.ncbi.nlm.nih.gov/Traces/study/?query_key=2&WebEnv=MCID_6aa4c8eebdb3bfa775d33915&o=acc_s%3Aa>
+
+4.2. Descargar ambos (Meta data dan toda la información a traves de Numbers).
+
+5.1 Ir a terminal cargar modulo:
+
+### Terminal Interactiva Cluster LAVIS ssh -Y aaviles\@ken.lavis.unam.mx:
+
+Accedemos a usuario: `cd /mnt/data/bioinfo1/aaviles/`
+
+Sirve para analizar datos o proceso de corta longitud y peso.
+
+- `module avail`: ver que modulos estan dispinbles (salir con q).
+
+- `module load sra/3.1.1` **:** SRA es para extraer **secuencias crudas .**
+
+- `prefetch SRA`...**:** Comando para descargarndesde los servidores del NCBI a tu computadora o servidor local secuencias crudas (un archivo comprimido `SRR12345678.sra`). Ejemplo: `prefetch SRR34360315`
+
+- `fasterq-dump`: Lee el archivo local descargado previamente y genera los archivos de lectura `.fastq` listos para ser analizados).
+
+  **Algunos comandos de bash**
+
+  `grep @SRR *.fastq|wc -l` : **Número total de lecturas (reads) de secuenciación** que provienen del Sequence Read Archive (SRA) dentro de todos los archivos `.fastq` del directorio actual.
+
+  - **`grep @SRR *.fastq`**: Busca la cadena de texto `@SRR` (que es el prefijo típico de los identificadores de secuencias descargadas de la base de datos SRA) en todos los archivos que terminan con la extensión `.fastq`.
+
+  - **`|`** (pipe o tubería): Toma la salida del comando anterior (todas las líneas que contienen `@SRR`) y se la pasa directamente al siguiente comando.
+
+  - **`wc -l`**: Cuenta el número de líneas que recibió. Como cada lectura de SRA tiene una línea de encabezado que empieza con `@SRR`, el resultado final es el conteo total de esas líneas.
+
+  - `grep -c @SRR *.fastq`: **Muestra cuántas lecturas (`@SRR`) tiene cada archivo `.fastq` por separado.** grep -c "\^\@PREFIJO" \*.fastq para ver total de secuncias en una muestra
+
+    Al usar la opción `-c` (`--count`), evitas tener que usar la tubería (`| wc -l`). Esto hace que el proceso sea mucho más rápido porque `grep` cuenta directamente mientras lee el archivo.
+
+    Ejemplo:
+
+    - SRR34860834_1.fastq:719254
+
+    - SRR34860834_2.fastq:719254
+
+    - SRR34860835_1.fastq:514619
+
+    - SRR34860835_2.fastq:514619
+
+    **`du -h *`** : Sirve para **mostrar el espacio en disco que ocupan tus carpetas y archivos.**
+
+  - `du` **(Disk Usage)**: Revisa el tamaño de cada directorio (y sus subdirectorios) en la ubicación actual.
+
+  - **`-h`** (Human-readable): Traduce los tamaños de bytes o bloques a formatos comprensibles como **K**ilobytes (K), **M**egabytes (M) o **G**igabytes (G) (por ejemplo: `4.2G` en lugar de `4404019`)
+
+    Ejemplo:
+
+    **0** main
+
+    **4.0K** README.md
+
+    **50M** SRR34360315
+
+    **111M** SRR34360315.fastq
+
+    # Descargar un Genoma de referencia SARS-CoV-2 causante de COVID-19
+
+    ### Terminal Jobs (no interactiva)
+
+    <https://www.ncbi.nlm.nih.gov/datasets/genome/>
+
+- **NCBI Genome:** Severe acute respiratory syndrome coronavirus 2.
+
+  <https://www.ncbi.nlm.nih.gov/search/all/?term=Severe%20acute%20respiratory%20syndrome%20coronavirus%202>
+
+- **Identificador:** ASM985889v3
+
+  <https://www.ncbi.nlm.nih.gov/datasets/genome/?taxon=2697049>
+
+- **Datasets** (da comandos para mandarlos a cluster): `datasets download virus genome taxon SARS-CoV-2 --include genome,cds,protein,annotation,biosample` : como se encuentra este comando <https://www.ncbi.nlm.nih.gov/datasets/genome/GCF_009858895.2/>
+
+- `module avail`: Ver que modulos estan dispinbles (salir con q).
+
+- `module load ncbi-datasets/18.16` : Comando que se utiliza en supercomputadoras o servidores de investigación (clústeres HPC) para **cargar y activar la herramienta "[NCBI Datasets](https://www.ncbi.nlm.nih.gov/datasets/)**" (versión 18.16) en tu sesión de trabajo.
+
+  - **NCBI Datasets**: Es una herramienta oficial de la base de datos biológica más grande del mundo (el NCBI de EE. UU.). Sirve para **descargar de forma masiva datos de genes y genomas completos** (incluyendo el genoma del SARS-CoV-2 o de cualquier otro organismo) mediante líneas de comandos.
+
+  En este caso utilizamos solo `datasets download virus genome taxon SARS-CoV-2 --include genome` para solo ocupar información del genoma y no otras extensiones de datos relacionados.
+
+- `module load fastqc/0.11.3`: sirve para **cargar la herramienta FastQC (versión 0.11.3) en un servidor de investigación**.
+
+  **Control de calidad**: FastQC es la herramienta estándar en bioinformática para **revisar la calidad de los datos de secuenciación de ADN o ARN** (como los archivos generados al secuenciar el SARS-CoV-2).
+
+- `fastqc *.fastq`:**Sirve para ejecutar el análisis de control de calidad en todos los archivos de secuenciación de tu carpeta actual**.
+
+  Al usar el asterisco (`*`), le estás diciendo a la terminal que busque cualquier archivo que termine con la extensión `.fastq` y procese todos al mismo tiempo.
+
+  Ejemplo: `fastqc *.fastq`
+
+  Started analysis of SRR34360315.fastq
+
+  Approx 20% complete for SRR34360315.fastq
+
+  Approx 25% complete for SRR34360315.fastq
+
+  `cp /mnt/data/bioinfo1/wgutierrez/my_script.slurm .:` Comando para copiar archivo de wgutierrez a directorio.
+
+- `nano my_script.slurm`: Modificamos usuario al nuestro y correo, ademas podemos ir a process y lo que estuvimos haciendo arriba en descargar uno por uno de los SR... con `prefetch SRA` y `fasterq-dump` puedes ponerlo directamente en el script y luego poner `fastqc *.fastq` y corre completo.
+
+- `sbatch my_script.slurm`: Corre el script y te aa que JOB ID tienes.
+
+- `squeue` : **Ver el estado de los trabajos (jobs) que están enviados a la cola de procesamiento** de tu servidor.
+
+  Es un comando nativo de **Slurm**, el gestor de recursos que utilizan casi todas las supercomputadoras de investigación. Cuando lo ejecutas, te muestra una tabla que te dice qué usuarios están usando el clúster, qué programas se están ejecutando y cuáles están esperando su turno.
+
+  Ejemplo: 2415      defq  aaviles  aaviles  R       0:32      1 node01
+
+- `firefox SRR34360315_fastqc.html`: Te manda en firefox a una ventana que te muestra la calidad de los datos descargados desde NCBI. Utilizando la versión html.
+
+# Codigo Genetico
+
+1.  Accedemos a usuario: `cd /mnt/data/bioinfo1/aaviles/`
+
+- `cp /mnt/data/bioinfo1/wgutierrez/seq2.fasta  /mnt/data/bioinfo1/aaviles:`Comando para copiar secuencia de wgutierrez a directorio nuestro.
+
+- `less seq2.fasta` : Vemos la secuencia y la copiamos.
+
+2.  Vamos a NCBI : ORF finder <https://www.ncbi.nlm.nih.gov/orffinder/>
+
+- Pegas la secuencia y le das standar sequence. Te reflejara las posibles longitudes de ORF. Nos quedamos con el ORF mas grande.
+
+Tarea identificar todo los aminoácidos de la secuencia:
+
+\>secuence
+
+ATGGTGCACCTGACTCCTGAGGAGAAGTCTGCCGTTACTGCCCTGTGGGGCAAGGTGAACGTGGATGAAGTTGGTGGTGAGGCCCTGGGCAGGCTGCTGGTGGTCTACCCTTGGACCCAGAGGTTCTTTGAGTCCTTTGGGGATCTGTCCACTCCTGATGCTGTTATGGGCAACCCTAAGGTGAAGGCTCATGGCAAGAAAGTGCTCGGTGCCTTTAGTGATGGCCTGGCTCACCTGGACAACCTCAAGGGCACCTTTGCCACACTGAGTGAGCTGCACTGTGACAAGCTGCACGTGGATCCTGAGAACTTCAGGCTCCTGGGCAACGTGCTGGTCTGTGTGCTGGCCCATCACTTTGGCAAAGAATTCACCCCACCAGTGCAGGCTGCCTATCAGAAAGTGGTGGCTGGTGTGGCTAATGCCCTGGCCCACAAGTATCACTAA
+
+seq2.fasta (END)
+
+Secuencia
+
+> lcl\|ORF1 MVHLTPEEKSAVTALWGKVNVDEVGGEALGRLLVVYPWTQRFFESFGDLS TPDAVMGNPKVKAHGKKVLGAFSDGLAHLDNLKGTFATLSELHCDKLHVD PENFRLLGNVLVCVLAHHFGKEFTPPVQAAYQKVVAGVANALAHKYH
+
+------------------------------------------------------------------------
+
+# Actividad Practica E.coli (Clase 2)
+
+- Ir a NCBI genome
+
+- Buscar: ASM886v2 <https://www.ncbi.nlm.nih.gov/datasets/genome/GCF_000008865.2/>
+
+- Copiar el comando: `datasets download genome accession GCF_000008865.2 --include gff3,rna,cds,protein,genome,seq-report`
+
+- Luego vamos a Bioproject
+
+- El codigo se pegara en el script en Jobs
+
+- Vamos a descargar del Bioproject **PRJNA295606** de Escherichia coli B str. REL606
+
+- Vamos a SRA experiments: 224 <https://www.ncbi.nlm.nih.gov/sra?linkname=bioproject_sra_all&from_uid=295606>
+
+- Send to (arriba de la pantalla)
+
+- Run selector: Dar Go
+
+- Ir a Metadata y Accession List
+
+- Descargar ambos (Meta data dan toda la información a traves de Numbers). <https://www.ncbi.nlm.nih.gov/Traces/study/?query_key=2&WebEnv=MCID_6aad67a7bdb3bfa7753940e0&o=acc_s%3Aa>
+
+- Ir a terminal cargar modulo
+
+### Terminal Interactiva Cluster LAVIS ssh -Y aaviles\@ken.lavis.unam.mx:
+
+Accedemos a usuario: `cd /mnt/data/bioinfo1/aaviles/`
+
+Sirve para analizar datos o proceso de corta longitud y peso.
+
+- `module avail`: ver que modulos estan dispinbles (salir con q).
+
+- `module load sra/3.1.1` **:** SRA es para extraer **secuencias crudas .**
+
+- `prefetch SRA`...**:** Comando para descargarndesde los servidores del NCBI a tu computadora o servidor local secuencias crudas (un archivo comprimido `SRR12345678.sra`). Ejemplo: `prefetch SRR34360315`
+
+- `fasterq-dump`: Lee el archivo local descargado previamente y genera los archivos de lectura `.fastq` listos para ser analizados).
+
+  **Algunos comandos de bash**
+
+  `grep @SRR *.fastq|wc -l` : **Número total de lecturas (reads) de secuenciación** que provienen del Sequence Read Archive (SRA) dentro de todos los archivos `.fastq` del directorio actual.
+
+  - **`grep @SRR *.fastq`**: Busca la cadena de texto `@SRR` (que es el prefijo típico de los identificadores de secuencias descargadas de la base de datos SRA) en todos los archivos que terminan con la extensión `.fastq`.
+
+  - **`|`** (pipe o tubería): Toma la salida del comando anterior (todas las líneas que contienen `@SRR`) y se la pasa directamente al siguiente comando.
+
+  - **`wc -l`**: Cuenta el número de líneas que recibió. Como cada lectura de SRA tiene una línea de encabezado que empieza con `@SRR`, el resultado final es el conteo total de esas líneas.
+
+  - `grep -c @SRR *.fastq`: **Muestra cuántas lecturas (`@SRR`) tiene cada archivo `.fastq` por separado.**
+
+    Al usar la opción `-c` (`--count`), evitas tener que usar la tubería (`| wc -l`). Esto hace que el proceso sea mucho más rápido porque `grep` cuenta directamente mientras lee el archivo.
+
+    Ejemplo:
+
+    - SRR34860834_1.fastq:719254
+
+    - SRR34860834_2.fastq:719254
+
+    - SRR34860835_1.fastq:514619
+
+    - SRR34860835_2.fastq:514619
+
+    **`du -h *`** : Sirve para **mostrar el espacio en disco que ocupan tus carpetas y archivos.**
+
+  - `du` **(Disk Usage)**: Revisa el tamaño de cada directorio (y sus subdirectorios) en la ubicación actual.
+
+  - **`-h`** (Human-readable): Traduce los tamaños de bytes o bloques a formatos comprensibles como **K**ilobytes (K), **M**egabytes (M) o **G**igabytes (G) (por ejemplo: `4.2G` en lugar de `4404019`)
+
+## Terminal Interactiva Cluster LAVIS ssh -Y aaviles\@ken.lavis.unam.mx:
+
+ACTIVIDAD PARTE EN TERMINAL
+
+```{bash}
+cd /mnt/data/bioinfo1/aaviles/
+module load sra/3.1.1
+nano nano my_script.slurm
+```
+
+Accedes y utilizamos los primeros 10 ID SRR que nos parecio en metadata al verlos en numbers
+
+**SCRIPT:**
+
+```{bash}
+#!/bin/bash
+# Run job through bash shell
+#
+# Your job name#SBATCH -J aaviles
+#
+# Use current working directory
+#SBATCH --chdir=./
+#
+#stdout and stderr
+#SBATCH --output=%x.o%j
+#
+# Send an email after the job has finished
+#SBATCH --mail-user=alanllano16@gmail.com
+#SBATCH --mail-type=END
+#
+# If modules are needed, source modules environment (Do not delete the next line):
+. /etc/profile.d/modules.sh
+#
+# Add any modules you might require:
+#
+module load sra/3.1.1
+module load ncbi-datasets/18.16
+module load fastqc/0.11.3
+#
+#SBATCH -p node
+#SBATCH -n 10
+#SBATCH --mem=10G
+#
+# Write your commands in the next line
+
+# Process
+prefetch SRR2588223
+prefetch SRR2588236
+prefetch SRR2588525
+prefetch SRR2588645
+prefetch SRR2588658
+prefetch SRR2588684
+prefetch SRR2588690
+prefetch SRR2588691
+prefetch SRR2588692
+prefetch SRR2588711
+
+fasterq-dump SRR2588223
+fasterq-dump SRR2588236 
+fasterq-dump SRR2588525
+fasterq-dump SRR2588645
+fasterq-dump SRR2588658
+fasterq-dump SRR2588684
+fasterq-dump SRR2588690
+fasterq-dump SRR2588691
+fasterq-dump SRR2588692
+fasterq-dump SRR2588711
+
+fastqc *.fastq
+
+datasets download genome accession GCF_000008865.2 --include ,cds,protein,genome,seq-report
+
+
+```
+
+Después del script:
+
+`sbatch` my_script.slurm (corres script)
+
+`squeue` **Ver el estado de los trabajos (jobs) que están enviados a la cola de procesamiento** de tu servidor.
+
+Nos dio el ID: 2450
+
+```{bash}
+[aaviles@ken aaviles]$ squeue
+             JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
+              2450      defq my_scrip  aaviles  R       0:08      1 node01
+              2449      defq rltesill rltesill  R       0:19      1 node01
+              2446      defq ctorres_  ctorres  R       8:39      1 node01
+              2445      defq my_scrip  aaviles  R      11:09      1 node01
+              2442      defq arobles_  arobles  R      13:37      1 node01
+              2439      defq mcampos_  mcampos  R      14:25      1 node01
+              2437      defq dgarcia_  dgarcia  R      17:13      1 node01
+              2436      defq acornejo acornejo  R      17:17      1 node01
+              2435      defq kjimenez kjimenez  R      21:41      1 node01
+              
+```
+
+- `ls -lt` :Ver los archivos por orden de tiempo.
+
+  ```{bash}
+  [aaviles@ken aaviles]$ ls -lt
+  total 9264396
+  -rw-r--r--  1 aaviles bioinfo1  536768512 Sep 18 11:20 SRR2588658_1.fastq
+  -rw-r--r--  1 aaviles bioinfo1  499019776 Sep 18 11:20 SRR2588658_2.fastq
+  drwxr-xr-x  2 aaviles bioinfo1       4096 Sep 18 11:19 fasterq.tmp.node01.2079228
+  drwxr-xr-x  2 aaviles bioinfo1       4096 Sep 18 11:12 fasterq.tmp.node01.2079000
+  -rw-r--r--  1 aaviles bioinfo1       2922 Sep 18 11:12 my_script.slurm.o2450
+  -rw-r--r--  1 aaviles bioinfo1  635414002 Sep 18 11:07 SRR2588525_2.fastq
+  -rw-r--r--  1 aaviles bioinfo1  655336946 Sep 18 11:07 SRR2588525_1.fastq
+  -rw-r--r--  1 aaviles bioinfo1       6826 Sep 18 11:07 my_script.slurm.o2445
+  drwxr-xr-x  2 aaviles bioinfo1        186 Sep 18 11:07 fasterq.tmp.node01.2078013
+  -rw-r--r--  1 aaviles bioinfo1  558680836 Sep 18 11:04 SRR2588236_1.fastq
+  -rw-r--r--  1 aaviles bioinfo1  558680836 Sep 18 11:04 SRR2588236_2.fastq
+  -rw-r--r--  1 aaviles bioinfo1  526357842 Sep 18 11:03 SRR2588223_2.fastq
+  -rw-r--r--  1 aaviles bioinfo1  526357842 Sep 18 11:03 SRR2588223_1.fastq
+  -rw-r--r--  1 aaviles bioinfo1       1173 Sep 18 11:01 my_script.slurm
+
+  ```
+
+Comandos para ver caracteristicas de los archivos:
+
+**Algunos comandos de bash**
+
+- `grep @SRR *.fastq|wc -l` : **Número total de lecturas (reads) de secuenciación** que provienen del Sequence Read Archive (SRA) dentro de todos los archivos `.fastq` del directorio actual.
+
+  - **`grep @SRR *.fastq`**: Busca la cadena de texto `@SRR` (que es el prefijo típico de los identificadores de secuencias descargadas de la base de datos SRA) en todos los archivos que terminan con la extensión `.fastq`.
+
+  - **`|`** (pipe o tubería): Toma la salida del comando anterior (todas las líneas que contienen `@SRR`) y se la pasa directamente al siguiente comando.
+
+  - **`wc -l`**: Cuenta el número de líneas que recibió. Como cada lectura de SRA tiene una línea de encabezado que empieza con `@SRR`, el resultado final es el conteo total de esas líneas.
+
+  - `grep -c @SRR *.fastq`: **Muestra cuántas lecturas (`@SRR`) tiene cada archivo `.fastq` por separado.**
+
+    Al usar la opción `-c` (`--count`), evitas tener que usar la tubería (`| wc -l`). Esto hace que el proceso sea mucho más rápido porque `grep` cuenta directamente mientras lee el archivo.
+
+    Ejemplo:
+
+    - SRR34860834_1.fastq:719254
+
+    - SRR34860834_2.fastq:719254
+
+    - SRR34860835_1.fastq:514619
+
+    - SRR34860835_2.fastq:514619
+
+    **`du -h *`** : Sirve para **mostrar el espacio en disco que ocupan tus carpetas y archivos.**
+
+  - `du` **(Disk Usage)**: Revisa el tamaño de cada directorio (y sus subdirectorios) en la ubicación actual.
+
+  - **`-h`** (Human-readable): Traduce los tamaños de bytes o bloques a formatos comprensibles como **K**ilobytes (K), **M**egabytes (M) o **G**igabytes (G) (por ejemplo: `4.2G` en lugar de `4404019`)
+
+    ### Los archivos que no hayan cargado al dar `ls *.fastq` los puedes cargar en una ventana interactiva con `fastq-dump`
+
+- Comando para sesion interactiva: `srun --export=ALL --x11 --pty bash`
+
+- Comando para cargar modulo NCBI: `module load ncbi-datasets/18.16`
+
+- Saber calidad en caso de ser necesario:`module load fastqc/0.11.3`
+
+  Pegamos el codigo que nos da NCBI en Genomes depues de buscar el codigo de el asembly : ASM886v2 <https://www.ncbi.nlm.nih.gov/datasets/genome/GCF_000008865.2/>
+
+- Copiar el comando de NCBI: `datasets download genome accession GCF_000008865.2 --include cds,protein,genome,seq-report`
+
+```{bash}
+      [aaviles@node01 aaviles]$datasets download genome accession GCF_000008865.2 --include cds,protein,genome,seq-reportt
+      New version of client (18.37.0) available at https://ftp.ncbi.nlm.nih.gov/pub/datasets/command-line/LATEST/linux-amd64/datasets.
+      Collecting 1 genome record [================================================] 100% 1/1
+      Downloading: ncbi_dataset.zip    4.79MB valid data package
+      Validating package files [================================================] 100% 9/9
+
+```
+
+### Revisamos en archivo de **`ncbi_dataset.zip`**
+
+`unzip` para descomprimir el archivo de NCBI
+
+```{bash}
+      [aaviles@node01 aaviles]$ unzip  ncbi_dataset.zip  
+      Archive:  ncbi_dataset.zip
+      replace README.md? [y]es, [n]o, [A]ll, [N]one, [r]ename: y
+        inflating: README.md               
+        inflating: ncbi_dataset/data/assembly_data_report.jsonl  
+        inflating: ncbi_dataset/data/GCF_000008865.2/cds_from_genomic.fna  
+        inflating: ncbi_dataset/data/GCF_000008865.2/GCF_000008865.2_ASM886v2_genomic.fna  
+        inflating: ncbi_dataset/data/GCF_000008865.2/genomic.gff  
+        inflating: ncbi_dataset/data/GCF_000008865.2/protein.faa  
+        inflating: ncbi_dataset/data/GCF_000008865.2/sequence_report.jsonl  
+        inflating: ncbi_dataset/data/dataset_catalog.json  
+        inflating: md5sum.txt 
+```
+
+### Obtenemos todos estos archivos:
+
+```{bash}
+      find ncbi_dataset/
+      ncbi_dataset/
+      ncbi_dataset/data
+      ncbi_dataset/data/assembly_data_report.jsonl
+      ncbi_dataset/data/GCF_000008865.2
+      ncbi_dataset/data/GCF_000008865.2/
+      ncbi_dataset/data/GCF_000008865.2/GCF_000008865.2_ASM886v2_genomic.fna
+      ncbi_dataset/data/GCF_000008865.2/genomic.gff
+      ncbi_dataset/data/GCF_000008865.2/protein.faa
+      ncbi_dataset/data/GCF_000008865.2/sequence_report.jsonl
+      ncbi_dataset/data/dataset_catalog.json
+```
+
+### Algunos comandos importantes
+
+```{bash}
+grep @SRR *.fastq|wc -l
+grep -c @SRR *.fastq
+du -h
+```
+
+## Comando para saber length
+
+`head SRR2588690_1.fastq`
+
+```{bash}
+[aaviles@node01 aaviles]$ head SRR2588690_1.fastq 
+@SRR2588690.1 HWI-ST957:244:H73TDADXX:1:1101:1221:2191 length=150
+GTTCTGCCGGGTGTTCAAACNNNNNNNNNNNNNNNNNGCCTTCNNNNNNNNNNNNNNNTTATTTCNNNNNNNNNNNNNNAAAGGGNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
++SRR2588690.1 HWI-ST957:244:H73TDADXX:1:1101:1221:2191 length=150
+;<<(@8)<8???##########################################################################################################################################
+@SRR2588690.2 HWI-ST957:244:H73TDADXX:1:1101:1249:2215 length=150
+TTACCATACAGCTCTTTACTTGCNNNNNNNNNNCGTATCATCTTCNNNNNNNNNNCGTGCGGAACGTNNNNNNNNNGACAGGTCGCACNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
++SRR2588690.2 HWI-ST957:244:H73TDADXX:1:1101:1249:2215 length=150
+<<<@@?@?@??@@?@@@@??@?@###############################################################################################################################
+@SRR2588690.3 HWI-ST957:244:H73TDADXX:1:1101:1417:2164 length=150
+TATTCCCATTGATTGCCNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNTTNNNNNNNNNNNNNNNNNNNANNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
+[aaviles@node01 aaviles]$ 
+```
+
+Nos da una longitud de 150
+
+### Comando para saber orden de peso de los archivos
+
+`du -h *.fastq | sort -rh | head -n 10`
+
+```{bash}
+[aaviles@node01 aaviles]$ du -h *.fastq  | sort -rh | head -n 10
+2.2G	SRR2588684_2.fastq
+2.2G	SRR2588684_1.fastq
+1.9G	SRR2588691_2.fastq
+1.9G	SRR2588691_1.fastq
+1.2G	SRR2588690_2.fastq
+1.2G	SRR2588690_1.fastq
+1.2G	SRR2588658_2.fastq
+1.2G	SRR2588658_1.fastq
+1.1G	SRR2588711_2.fastq
+1.1G	SRR2588711_1.fastq
+[aaviles@node01 aaviles]$ 
+
+```
+
+### Comando para ver secuencias individuales:
+
+### `grep -c "^>" ncbi_dataset/data/GCF_000008865.2/protein.faa`
+
+Este comando busca todos los archivos con extensión `.fna` (archivos de secuencias de nucleótidos en formato FASTA) dentro del directorio `ncbi_dataset/` y cuenta cuántas secuencias individuales contiene cada uno.
+
+Aquí tienes el desglose exacto de lo que hace cada parte:
+
+- **`find ncbi_dataset/`**: Inicia una búsqueda de archivos dentro de esa carpeta.
+
+- **`-name "*.fna"`**: Filtra la búsqueda para encontrar únicamente los archivos que terminan en `.fna`.
+
+- **`-exec ... {} +`**: Toma la lista de todos los archivos encontrados y ejecuta el comando posterior sobre ellos.
+
+- **`grep -c "^>"`**: El símbolo `>` indica el encabezado de una secuencia en el formato FASTA. El comando `grep` busca las líneas que inician (`^`) con `>` y la bandera `-c` (*count*) simplemente cuenta cuántas líneas coinciden en lugar de imprimir el texto.
+
+```{bash}
+[aaviles@node01 aaviles]$ grep -c "^>" ncbi_dataset/data/GCF_000008865.2/protein.faa
+5155
+```
+
+Da 5155
+
+### Para ver encabezados de un archivo como el archivo de proteinas : `protein.faa`
+
+`grep "^>" ncbi_dataset/data/GCF_000008865.2/protein.faa | head`
+
+- **`grep "^>"`**: Extrae exclusivamente las líneas que empiezan con `>` (los identificadores de la proteína).
+
+- **`| head`**: Toma esa enorme lista extraída y te imprime en pantalla únicamente los primeros 10 resultados.
+
+```{bash}
+[aaviles@node01 aaviles]$ grep "^>" ncbi_dataset/data/GCF_000008865.2/protein.faa | head
+>NP_052604.1 plasmid mobilization (plasmid) [Escherichia coli O157:H7 str. Sakai]
+>NP_052605.1 hypothetical protein pOSAK1_02 (plasmid) [Escherichia coli O157:H7 str. Sakai]
+>NP_052606.1 hypothetical protein pOSAK1_03 (plasmid) [Escherichia coli O157:H7 str. Sakai]
+>NP_052607.1 ToxR-regulated lipoprotein (plasmid) [Escherichia coli O157:H7 str. Sakai]
+>NP_052608.1 EtpC (plasmid) [Escherichia coli O157:H7 str. Sakai]
+>NP_052609.1 EtpD (plasmid) [Escherichia coli O157:H7 str. Sakai]
+>NP_052610.1 EtpE (plasmid) [Escherichia coli O157:H7 str. Sakai]
+>NP_052611.1 EtpF (plasmid) [Escherichia coli O157:H7 str. Sakai]
+>NP_052612.1 EtpG (plasmid) [Escherichia coli O157:H7 str. Sakai]
+>NP_052613.1 EtpH (plasmid) [Escherichia coli O157:H7 str. Sakai]
+[aaviles@node01 aaviles]$ 
+```
+
+Entonces el encabezado es \>NP
+
+### Para ver encabezados de un archivo como el archivo de genoma completo de E.coli: `GCF_000008865.2_ASM886v2_genomic.fna`
+
+```{bash}
+[aaviles@node01 aaviles]$ grep "^>" ncbi_dataset/data/GCF_000008865.2/GCF_000008865.2_ASM886v2_genomic.fna| head
+>NC_002695.2 Escherichia coli O157:H7 str. Sakai DNA, complete genome
+>NC_002127.1 Escherichia coli O157:H7 str. Sakai plasmid pOSAK1, complete sequence
+>NC_002128.1 Escherichia coli O157:H7 str. Sakai plasmid pO157, complete sequence
+[aaviles@node01 aaviles]$ 
+```
+
+Entonces el encabezado en genoma completo es \>NC
+
+### Comando para contar qué hay dentro del genoma (genes, ARNt, ARNr, exones)
+
+`grep -v "^#" ncbi_dataset/data/GCF_000008865.2/genomic.gff | cut -f3 | sort | uniq -c`
+
+Puedes ver exactamente cuántos elementos biológicos distintos están anotados en el genoma. Esto filtra los comentarios del archivo GFF, extrae la tercera columna (que dice el tipo de elemento), los ordena y los cuenta.
+
+```{bash}
+[aaviles@node01 aaviles]$ grep -v "^#" ncbi_dataset/data/GCF_000008865.2/genomic.gff | cut -f3 | sort | uniq -c
+   5156 CDS
+    126 exon
+   5281 gene
+    136 pseudogene
+      5 region
+     65 repeat_region
+     22 rRNA
+    163 sequence_feature
+      1 tmRNA
+    103 tRNA
+[aaviles@node01 aaviles]$ 
+```
+
+### Comando para buscar familias de proteínas o genes específicos:
+
+Cuántas proteínas de cierto tipo tiene este organismo (por ejemplo, quinasas, polimerasas o proteínas ribosomales), puedes buscar la palabra en los encabezados usando `grep -i` (que ignora mayúsculas/minúsculas).
+
+En este caso buscaremos polimerasas:
+
+`grep -i "polymerase" ncbi_dataset/data/GCF_000008865.2/protein.faa`
+
+```{bash}
+[aaviles@node01 aaviles]$ grep -i "polymerase" ncbi_dataset/data/GCF_000008865.2/protein.faa | wc -l
+30
+```
+
+Nos da 30 proteínas que tienn anotada la palabra polimerasa coo las ADN o ARN polimerasas.
+
+### Comando para calcular el tamaño aproximado del genoma en pares de bases (pb):
+
+Si tomas el archivo del genoma completo, omites las líneas de los encabezados (con `-v "^>"`) y cuentas los caracteres (con `wc -m`), obtendrás una aproximación muy cercana al total de nucleótidos del organismo.
+
+```{bash}
+[aaviles@node01 aaviles]$ grep -v "^>" ncbi_dataset/data/GCF_000008865.2/GCF_000008865.2_ASM886v2_genomic.fna | wc -m
+5664540
+```
+
+Da 5664540
+
+### Comando para ver en qué cromosomas o plásmidos están los genes:
+
+Los encabezados del archivo de CDS (`cds_from_genomic.fna`) no solo tienen el nombre de la proteína, sino también su ubicación exacta (`[location=...]`). Puedes darle un vistazo rápido para ver cómo está estructurada esa metainformación.
+
+Asegurate meterte hasta edntro de los directorios otro caso de un archivo seleccionado
+
+```{bash}
+ cd  GCF_000146045.2  # directorio
+```
+
+```{bash}
+ls
+cds_from_genomic.fna             protein.faa
+GCF_000146045.2_R64_genomic.fna  sequence_report.jsonl
+```
+
+```{bash}
+less GCF_000146045.2_R64_genomic.fna 
+```
+
+```{bash}
+[aaviles@ken GCF_000146045.2]$ grep "^>" GCF_000146045.2_R64_genomic.fna 
+>NC_001133.9 Saccharomyces cerevisiae S288C chromosome I, complete sequence
+>NC_001134.8 Saccharomyces cerevisiae S288C chromosome II, complete sequence
+>NC_001135.5 Saccharomyces cerevisiae S288C chromosome III, complete sequence
+>NC_001136.10 Saccharomyces cerevisiae S288C chromosome IV, complete sequence
+>NC_001137.3 Saccharomyces cerevisiae S288C chromosome V, complete sequence
+>NC_001138.5 Saccharomyces cerevisiae S288C chromosome VI, complete sequence
+>NC_001139.9 Saccharomyces cerevisiae S288C chromosome VII, complete sequence
+>NC_001140.6 Saccharomyces cerevisiae S288C chromosome VIII, complete sequence
+>NC_001141.2 Saccharomyces cerevisiae S288C chromosome IX, complete sequence
+>NC_001142.9 Saccharomyces cerevisiae S288C chromosome X, complete sequence
+>NC_001143.9 Saccharomyces cerevisiae S288C chromosome XI, complete sequence
+>NC_001144.5 Saccharomyces cerevisiae S288C chromosome XII, complete sequence
+>NC_001145.3 Saccharomyces cerevisiae S288C chromosome XIII, complete sequence
+>NC_001146.8 Saccharomyces cerevisiae S288C chromosome XIV, complete sequence
+>NC_001147.6 Saccharomyces cerevisiae S288C chromosome XV, complete sequence
+>NC_001148.4 Saccharomyces cerevisiae S288C chromosome XVI, complete sequence
+>NC_001224.1 Saccharomyces cerevisiae S288c mitochondrion, complete genome
+
+```
+
+```{bash}
+[aaviles@node01 aaviles]$ grep "^>" ncbi_dataset/data/GCF_000008865.2/cds_from_genomic.fna | head -n 5
+>lcl|NC_002695.2_cds_NP_308028.1_1 [gene=thrL] [locus_tag=ECs_0001] [db_xref=GeneID:913387] [protein=thr operon leader peptide] [protein_id=NP_308028.1] [location=190..273] [gbkey=CDS]
+>lcl|NC_002695.2_cds_NP_308029.1_2 [gene=thrA] [locus_tag=ECs_0002] [db_xref=GeneID:913388] [protein=aspartokinase I] [protein_id=NP_308029.1] [location=354..2816] [gbkey=CDS]
+>lcl|NC_002695.2_cds_NP_308030.1_3 [gene=thrB] [locus_tag=ECs_0003] [db_xref=GeneID:913390] [protein=homoserine kinase] [protein_id=NP_308030.1] [location=2818..3750] [gbkey=CDS]
+>lcl|NC_002695.2_cds_NP_308031.1_4 [gene=thrC] [locus_tag=ECs_0004] [db_xref=GeneID:913393] [protein=L-threonine synthase] [protein_id=NP_308031.1] [location=3751..5037] [gbkey=CDS]
+>lcl|NC_002695.2_cds_NP_308032.1_5 [gene=yaaX] [locus_tag=ECs_0005] [db_xref=GeneID:913394] [protein=hypothetical protein] [protein_id=NP_308032.1] [location=5251..5547] [gbkey=CDS]
+```
+
+### Comando para identificar si hay ARN no codificante (ncRNA):
+
+Podemos buscar cuántos están anotados directamente en el GFF.
+
+```{bash}
+[aaviles@node01 aaviles]$ grep -c "ncRNA" ncbi_dataset/data/GCF_000008865.2/genomic.gff
+0
+```
+
+Nos dio 0 ARN codificante en el archivo de anotación.
+
+### otros RNA:
+
+```{bash}
+[aaviles@node01 aaviles]$ grep -c "tRNA" ncbi_dataset/data/GCF_000008865.2/genomic.gff
+385
+```
+
+385 ARN de transferencia
+
+```{bash}
+[aaviles@node01 aaviles]$ grep -c "rRNA" ncbi_dataset/data/GCF_000008865.2/genomic.gff
+92
+```
+
+92 de ARN ribosomal
+
+Ese **92** indica que hay 92 líneas en tu archivo de anotación que hacen referencia a ARN ribosomal (rRNA).
+
+# Quiz (Clase 2)
+
+1.¿Cuál es el identificador de las secuencias crudas que se descargaron?
+
+Respuesta: **\@SRR**
+
+2.  ¿Cuántas secuencias contiene el archivo SRR2588223_1.fastq?
+
+    ```{bash}
+    [aaviles@node01 aaviles]$ grep -c @SRR *.fastq
+    SRR2588223_1.fastq:1497429
+    SRR2588223_2.fastq:1497429
+    ```
+
+Respuesta: **1497429**
+
+3.  ¿ Cuánto pesa en (Mb o Gb) el archivo SRR2588684_1.fastq?
+
+    ```{bash}
+    d[aaviles@node01 aaviles]$ du -h SRR2588684_1.fastq
+    2.2G	SRR2588684_1.fastq
+    ```
+
+    Respuesta: **2.2G**
+
+4.  ¿Qué longitud tiene las primeras secuencias del archivo SRR2588690_1.fastq?
+
+    ```{bash}
+     [aaviles@node01 aaviles]$ du -h SRR2588684_1.fastq
+    2.2G	SRR2588684_1.fastq
+    [aaviles@node01 aaviles]$  head SRR2588690_1.fastq 
+    @SRR2588690.1 HWI-ST957:244:H73TDADXX:1:1101:1221:2191 length=150
+    GTTCTGCCGGGTGTTCAAACNNNNNNNNNNNNNNNNNGCCTTCNNNNNNNNNNNNNNNTTATTTCNNNNNNNNNNNNNNAAAGGGNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
+    +SRR2588690.1 HWI-ST957:244:H73TDADXX:1:1101:1221:2191 length=150
+    ;<<(@8)<8???##########################################################################################################################################
+    @SRR2588690.2 HWI-ST957:244:H73TDADXX:1:1101:1249:2215 length=150
+    TTACCATACAGCTCTTTACTTGCNNNNNNNNNNCGTATCATCTTCNNNNNNNNNNCGTGCGGAACGTNNNNNNNNNGACAGGTCGCACNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
+    +SRR2588690.2 HWI-ST957:244:H73TDADXX:1:1101:1249:2215 length=150
+    <<<@@?@?@??@@?@@@@??@?@###############################################################################################################################
+    @SRR2588690.3 HWI-ST957:244:H73TDADXX:1:1101:1417:2164 length=150
+    TATTCCCATTGATTGCCNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNTTNNNNNNNNNNNNNNNNNNNANNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
+    ```
+
+    Respuesta: **Longitud 150**
+
+5.  Ordena de mayor a menor las primeras 5 secuencias de acuerdo al peso en Mb o Gb de los archivos de secuencias
+
+    ```{bash}
+    du -h *.fastq
+    502M	SRR2588223_1.fastq
+    502M	SRR2588223_2.fastq
+    533M	SRR2588236_1.fastq
+    533M	SRR2588236_2.fastq
+    861M	SRR2588525_1.fastq
+    861M	SRR2588525_2.fastq
+    970M	SRR2588645_1.fastq
+    970M	SRR2588645_2.fastq
+    1.2G	SRR2588658_1.fastq
+    1.2G	SRR2588658_2.fastq
+    2.2G	SRR2588684_1.fastq
+    2.2G	SRR2588684_2.fastq
+    1.2G	SRR2588690_1.fastq
+    1.2G	SRR2588690_2.fastq
+    1.9G	SRR2588691_1.fastq
+    1.9G	SRR2588691_2.fastq
+    730M	SRR2588692_1.fastq
+    730M	SRR2588692_2.fastq
+    1.1G	SRR2588711_1.fastq
+    1.1G	SRR2588711_2.fastq
+    111M	SRR34360315.fastq
+    131M	SRR34360316.fastq
+    122M	SRR34360317.fastq
+    69M	SRR34360318.fastq
+    77M	SRR34360319.fastq
+    293M	SRR34860834_1.fastq
+    293M	SRR34860834_2.fastq
+    209M	SRR34860835_1.fastq
+    209M	SRR34860835_2.fastq
+    129M	SRR34860836_1.fastq
+    129M	SRR34860836_2.fastq
+    223M	SRR34860846_1.fastq
+    223M	SRR34860846_2.fastq
+    254M	SRR34860854_1.fastq
+    254M	SRR34860854_2.fastq
+    [aaviles@node01 aaviles]$ 
+    ```
+
+    Respuesta en orden:
+
+    **2.2G SRR2588684_1.fastq**
+
+    **1.9G SRR2588691_1.fastq**
+
+    **1.2G SRR2588690_1.fastq**
+
+    **1.2G SRR2588658_1.fastq**
+
+    **1.1G SRR2588711_1.fastq**
+
+6.  ¿Qué herramienta debo usar para descargar secuencias crudas del NCBI?
+
+    Respuesta:**SRA**
+
+7.  ¿ Cuándo es conveniente usar sesión interactiva srun pty bas?
+
+    Respuesta: **Cuando requerimos hacer procedimientos cortos.**
+
+8.  ¿Qué herramienta puedo usar para descargar un genoma de referencia por linea de comando?
+
+    Respuesta: **ncbidataset**
+
+9.  ¿Cuándo es conveniente enviar un proceso en Job con Slurm?
+
+    Cuando quiero hacer analisis masivo de datos.
+
+A mi me gustria leer el Capitulo 7 (Evolutionary Tree Reconstruction)
+
+debiod a que me parece muy importante e interesante como podemos 
+
+reconstruir arboles filogeneticos para enfermedades dando con su origen 
+
+natural antes de hacer zoonosis con el ser humano y empezar a expandirse 
+
+en la poblacion. Como en el video tambien que hablan de 
+
+retrotranscripcion
+
+De igual forma me gustaria estudiar el capitulo 10 Hidden Markov Models
+
+donde se habla de clasificacon de fenotipos de HIV virus. Me llama laatencion me interesa mucho aprender sobre como se pueden ocupar la 
+
+bioinformatica para poder encontrar sus debilidades.
+
+Tarea1.md (END)
