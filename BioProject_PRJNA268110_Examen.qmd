@@ -1,0 +1,347 @@
+---
+title: "BioProject_PRJNA268110_Examen,"
+author: "Alan Francisco Llano Aviles"
+format: pdf
+editor: visual
+---
+
+# Reporte Técnico de Análisis Genómico y Exploración de Datos de Secuenciación Masiva del BioProject PRJNA268110
+
+## 1. Introducción
+
+### 1.1. Contexto biológico y experimental
+
+**Organismo estudiado:** Levadura de cerveza
+
+**Especie: [Saccharomyces cerevisiae](https://www.ncbi.nlm.nih.gov/taxonomy/4932 "Saccharomyces cerevisiae in Taxonomy")**
+
+**Strain (cepa):** WFA73 y WFA72
+
+El organismo estudiado fue una levaradura de cerveza de especie [**Saccharomyces cerevisiae**](https://www.ncbi.nlm.nih.gov/taxonomy/4932 "Saccharomyces cerevisiae in Taxonomy") utilizando la cepa WFA73.
+
+### 1.2. Objetivo del estudio
+
+**Institución:** SUNY Upstate Medical University
+
+**Equipo:** Wenyi Feng
+
+**Fecha de registro de datos crudos:** 20-Noviembre-2014
+
+**Fecha de publicación artículo :** 25-Marzo-2015
+
+**Preguntá biologíca:** ¿Por qué diferentes inhibidores de la replicación producen diferentes espectros de rotura cromosómica y cómo se relacionan los conflictos no programados entre la transcripción y la replicación del ADN con la fragilidad genómica inducida por estrés replicativo?
+
+**Objetivo:** En este estudio se realizó un análisis de expresión génica con RNA-seq durante y después la exposición a hidroxiurea en células WT y mec1 en Saccharomyces cerevisiae para poder determinar si todas las horquillas de replicación que contienen huecos de ssDNA tienen la misma probabilidad de producir roturas de doble cadena (DSB) cuando las células intentan recuperarse de la exposición a HU.
+
+Nota: Vamos a NCBI BioProject PRJNA268110
+
+<https://www.ncbi.nlm.nih.gov/bioproject/?term=PRJNA268110>
+
+Obtemos parte de la información como objetivo, pregunta biologíca, fechas de publicación de la ventana principal del BioProject
+
+## 2. Exploración del BioProject
+
+**2.1 Vamos a SRA Experimets** <https://www.ncbi.nlm.nih.gov/sra?linkname=bioproject_sra_all&from_uid=268110>
+
+**2.1 Le damos a Run selector (Go).**
+
+**2.3 Nos dirigimos a la tabla de datos dónde aprecerá la información requerida.**
+
+<https://www.ncbi.nlm.nih.gov/Traces/study/?query_key=1&WebEnv=MCID_6ac9aba44bc8dff80616d164&o=acc_s%3Aa>
+
+| BioProject | BioSample | SRA Experiment | SRA Run | Tipo de Secuenciación | Paired/Single | Read length | Número de lecturas (Number of reads / spots) | Formato de archivos |
+|--------|--------|--------|--------|--------|--------|--------|--------|--------|
+| PRJNA268110 | [SAMN03203061](https://www.ncbi.nlm.nih.gov/biosample/SAMN03203061) | [SRX764815](https://www.ncbi.nlm.nih.gov/sra/SRX764815) | [SRR1658454](https://trace.ncbi.nlm.nih.gov/Traces/sra?run=SRR1658454) | 1 LLUMINA (Illumina MiSeq) | PAIRED-END | 75 bp | 148 | FASTQ |
+| PRJNA268110 | [SAMN03203063](https://www.ncbi.nlm.nih.gov/biosample/SAMN03203063) | [SRX764816](https://www.ncbi.nlm.nih.gov/sra/SRX764816) | [SRR1658455](https://trace.ncbi.nlm.nih.gov/Traces/sra?run=SRR1658455) | 1 LLUMINA (Illumina MiSeq) | PAIRED-END | 75 bp | 149 | FASTQ |
+| PRJNA268110 | [SAMN03203066](https://www.ncbi.nlm.nih.gov/biosample/SAMN03203066) | [SRX764817](https://www.ncbi.nlm.nih.gov/sra/SRX764817) | [SRR1658456](https://trace.ncbi.nlm.nih.gov/Traces/sra?run=SRR1658456) | 1 LLUMINA (Illumina MiSeq) | PAIRED-END | 75 bp | 148 | FASTQ |
+| PRJNA268110 | [SAMN03203053](https://www.ncbi.nlm.nih.gov/biosample/SAMN03203053) | [SRX764818](https://www.ncbi.nlm.nih.gov/sra/SRX764818) | [SRR1658457](https://trace.ncbi.nlm.nih.gov/Traces/sra?run=SRR1658457) | 1 LLUMINA (Illumina MiSeq) | PAIRED-END | 75 bp | 149 | FASTQ |
+| PRJNA268110 | [SAMN03203062](https://www.ncbi.nlm.nih.gov/biosample/SAMN03203062) | [SRX764819](https://www.ncbi.nlm.nih.gov/sra/SRX764819) | [SRR1658458](https://trace.ncbi.nlm.nih.gov/Traces/sra?run=SRR1658458) | 1 LLUMINA (Illumina MiSeq) | PAIRED-END | 75 bp | 148 | FASTQ |
+| PRJNA268110 | [SAMN03203059](https://www.ncbi.nlm.nih.gov/biosample/SAMN03203059) | [SRX764820](https://www.ncbi.nlm.nih.gov/sra/SRX764820) | [SRR1658459](https://trace.ncbi.nlm.nih.gov/Traces/sra?run=SRR1658459) | 1 LLUMINA (Illumina MiSeq) | PAIRED-END | 75 bp | 149 | FASTQ |
+| PRJNA268110 | [SAMN03203067](https://www.ncbi.nlm.nih.gov/biosample/SAMN03203067) | [SRX764821](https://www.ncbi.nlm.nih.gov/sra/SRX764821) | [SRR1658460](https://trace.ncbi.nlm.nih.gov/Traces/sra?run=SRR1658460) | 1 LLUMINA (Illumina MiSeq) | PAIRED-END | 75 bp | 148 | FASTQ |
+| PRJNA268110 | [SAMN03203068](https://www.ncbi.nlm.nih.gov/biosample/SAMN03203068) | [SRX764822](https://www.ncbi.nlm.nih.gov/sra/SRX764822) | [SRR1658461](https://trace.ncbi.nlm.nih.gov/Traces/sra?run=SRR1658461) | 1 LLUMINA (Illumina MiSeq) | PAIRED-END | 75 bp | 148 | FASTQ |
+
+**BioProject**: Es el estudio científico en su conjunto. Agrupa todos los datos recolectados,muestras, experimentos y publicaciones vinculadas a una misma pregunta biologíca.
+
+**BioSample:** Describe la muestra biologíca utilizada (especimen) y contiene los metadatos biologícos tales como: orgaismo, cepa, tejido, fenotipo y tiempo de recolección.
+
+**SRA Experiment:** Describe cómo se generaron los datos de secuenciación de ADN para una muestra específica. Se especifíca método de extracción, plataforma de secuenciación, la biblioteca y si es paired-end o single-end.
+
+**SRA RUN:** Contiene los datos crudos generados en la secuenciación. Es el nivel más básico de la jerarquía. Es de donde se descargan los archivos fastq.
+
+## 3. Descarga y exploración de las secuencias
+
+<https://www.ncbi.nlm.nih.gov/Traces/study/?query_key=1&WebEnv=MCID_6ac9aba44bc8dff80616d164&o=acc_s%3Aa>
+
+**3.1 Descargamos los archivos de Metadata y Acession List.**
+
+**3.2 Accedemos kent.**
+
+**3.3 Accedemos a nuestro usuario.**
+
+- Ejemplo: `cd /mnt/data/bioinfo1/user/`
+
+**3.4 Cargamos los modulos necesarios**
+
+Comando: `module load sra/3.1.1`
+
+**3.5 Después en creamos un script: `my_script.slurm.`**
+
+**3.6 Añadimos los comandos dentro del archivo:**
+
+```{bash}
+prefetch SRR1658459
+prefetch SRR1658460
+prefetch SRR1658461
+
+fasterq-dump SRR1658454
+fasterq-dump SRR1658455
+fasterq-dump SRR1658456
+fasterq-dump SRR1658457
+fasterq-dump SRR1658458
+fasterq-dump SRR1658459
+fasterq-dump SRR1658460
+fasterq-dump SRR1658461
+
+fastqc *.fastq
+
+
+
+datasets download genome accession GCF_000146045.2 --include cds,protein,genome,seq-report
+
+```
+
+- `prefetch`**:** Comando para descargarndesde los servidores del NCBI a tu computadora o servidor local secuencias crudas.
+
+- `fasterq-dump`: Lee el archivo local descargado previamente y genera los archivos de lectura `.fastq` listos para ser analizados).
+
+- `fastqc *.fastq`:**Sirve para ejecutar el análisis de control de calidad en todos los archivos de secuenciación de tu carpeta actual**.
+
+- `datasets download genome accession GCF_000146045.2 --include cds,protein,genome,seq-report` : Viene del assembly R64.
+
+- Utiliza la herramienta de línea de comandos NCBI Datasets para descargar el genoma de referencia. El parámetro `--include` le indica al servidor que empaquete archivos específicos junto con la descarga principal.
+
+  **3.7 Corremos el script.**
+
+- `sbatch` my_script.slurm (corres script).
+
+- `squeue` **Ver el estado de los trabajos (jobs) que están enviados a la cola de procesamiento** de tu servidor.
+
+  **3.8 Analizamos los archivos obtenidos y su contenido.**
+
+- **Número de archivos descargados:**
+
+  - Comando: `ls -1 *.fastq| wc -l`
+
+  - Resultado: 16
+
+- **Tamaño de cada archivo (Mb o Gb):**
+
+  - Comando: `du -h *.fastq | sort -rh | head -n 20`
+
+  - Resultado:
+
+    1.3G SRR1658458_2.fastq
+
+    1.3G SRR1658458_1.fastq
+
+    1.1G SRR1658461_2.fastq
+
+    1.1G SRR1658461_1.fastq
+
+    960M SRR1658457_2.fastq
+
+    960M SRR1658457_1.fastq
+
+    870M SRR1658459_2.fastq
+
+    870M SRR1658459_1.fastq
+
+    741M SRR1658454_1.fastq
+
+    740M SRR1658454_2.fastq
+
+    715M SRR1658460_1.fastq
+
+    714M SRR1658460_2.fastq
+
+    522M SRR1658456_2.fastq
+
+    522M SRR1658456_1.fastq
+
+    449M SRR1658455_2.fastq
+
+    449M SRR1658455_1.fastq
+
+- **Número de secuencias:**
+
+  - Comando: `grep -c "^@SRR" *.fastq`
+
+  - Resultado:
+
+    SRR1658454_1.fastq:3438388
+
+    SRR1658454_2.fastq:3438388
+
+    SRR1658455_1.fastq:2090805
+
+    SRR1658455_2.fastq:2090805
+
+    SRR1658456_1.fastq:2428934
+
+    SRR1658456_2.fastq:2428934
+
+    SRR1658457_1.fastq:4452257
+
+    SRR1658457_2.fastq:4452257
+
+    SRR1658458_1.fastq:6080904
+
+    SRR1658458_2.fastq:6080904
+
+    SRR1658459_1.fastq:4037197
+
+    SRR1658459_2.fastq:4037197
+
+    SRR1658460_1.fastq:3317701
+
+    SRR1658460_2.fastq:3317701
+
+    SRR1658461_1.fastq:4961938
+
+    SRR1658461_2.fastq:4961938
+
+- **Longitud promedio de las lecturas:**
+
+  - Comando: `head -n 4 *.fastq`
+
+  - Resultado: Length entre 74-75 bp
+
+- **Identificar si las lecturas son paired-end o single-end:**
+
+  - Comando: `ls *.fastq`
+
+  - Resultado:
+
+    SRR1658454_1.fastq  SRR1658456_1.fastq  SRR1658458_1.fastq  SRR1658460_1.fastq
+
+    SRR1658454_2.fastq  SRR1658456_2.fastq  SRR1658458_2.fastq  SRR1658460_2.fastq
+
+    SRR1658455_1.fastq  SRR1658457_1.fastq  SRR1658459_1.fastq  SRR1658461_1.fastq
+
+    SRR1658455_2.fastq  SRR1658457_2.fastq  SRR1658459_2.fastq  SRR1658461_2.fastq
+
+Hay dos archivos por las 8 muestras mostrando forward y reverse por lo tanto son **paired-end**
+
+- **Archivo**
+
+  - Comando: `head -n 4 SRR1658454_1.fastq`
+
+  - Resultado: \@SRR1658454.1 1 length=75
+
+    - Línea 1: Es el identificador único de la lectura. Contiene el "\@" al principio, siguiendo con el número de acceso SRR1658454, al igual que señala si es forward o reverse y finalmente incluye su longitud.
+
+    CGGGAATTCATCATCAGTCCTTCCCACTAAGTAAACAAGGTGTCTTCATCTCTCAAATACTCACCAATATCTGCT
+
+    - Línea 2: Es la secuencia de nucleótidos leída por el secuenciador, incluye los 4 bases posibles y en ciertos casos N cuando no se determina la base.
+
+    +SRR1658454.1 1 length=75
+
+    - Línea 3: Separador, comienza con "+". Separa la secuencia de nucleótidos con los valores de calidad.
+
+    668--+CFF9FGGGGGGGGGGGGGGGGGGGGGFFDFFGFFG8CFFFF9FFFGFGFAAFFFDF,CFC8F,CCC,\<C
+
+    - Línea 4: Contine valores de calidad con caracteres ASCII (letras, números y símbolos). Cada carácter tiene asignado un valor de calidad o nivel de confianza de la máquina para la base correspondiente a la secuencia de la línea 2. **Es un requisito estricto del formato FASTQ que esta línea tenga exactamente la misma cantidad de caracteres que la Línea 2** (en este caso, 75 caracteres).
+
+## 4. Cuantificación y exploración básica
+
+### Control de Calidad de las Secuencias (FastQC)
+
+Se realizó el control de calidad de los 16 archivos FASTQ utilizando la herramienta FastQC.
+
+Se paso el archivo del servidor a la computadora para poder visualizarlo en el buscador.
+
+**Comando:** scp `user@ken.lavis.unam.mx:/mnt/data/bioinfo1/aaviles/SRR1658454_1_fastqc.html ~/Downloads/`
+
+A partir de los reportes generados, se obtuvo la siguiente información general:
+
+![](Captura de pantalla 2026-10-09 a la(s) 23.29.20.png)
+
+**Número total de reads:** 3,438,388.
+
+**Longitud de las lecturas:** 35-75 pb.
+
+La gráfica "Per base sequence quality" nos esta indicando que todas las cajas amarillas, que representan la distribución de los Phred scores, se mantienen completamente dentro de la zona verde de alta calidad en todas las bases analizadas.
+
+## 5. Genoma ensamblado del organismo
+
+<https://www.ncbi.nlm.nih.gov/datasets/genome/GCF_000146045.2/>
+
+**Genome assembly:** R64
+
+**Organismo:** [Saccharomyces cerevisiae S288C](https://www.ncbi.nlm.nih.gov/datasets/taxonomy/559292)
+
+**NCBI RefSeq assembly:** GCF_000146045.2
+
+**Submitted GenBank assembly:** GCA_000146045.2
+
+- **Comando que nos proporciona NCBI par subir el genoma** (Es el que se añadio en el script .slurm)**:**
+
+  `datasets download genome accession GCF_000146045.2 --include gff3,rna,cds,protein,genome,seq-report`
+
+**Tamaño total del genoma (Gen Bank):** 12.81Mb (aproximadamente 12,100 pares de bases)
+
+- **Comando en terminal:** `GCF_000146045.2_R64_genomic.fna | wc -m`
+
+- **Resultado:** 12309078 pb
+
+**Número de contigs/scaffolds o cromosomas, según corresponda:**
+
+**Comando:** `grep -c "^>" GCF_000146045.2_R64_genomic.fna`
+
+Resultado:17
+
+En la plataforma del assembly decian 16, pero el comando cuenta 16 secuencias nucleares más una mitocondrial , por eso dan 17.
+
+**Comando de verificación:** `grep "^>" GCF_000146045.2_R64_genomic.fna`
+
+**Resultado:**
+
+**\>**NC_001133.9 Saccharomyces cerevisiae S288C chromosome I, complete sequence
+
+**\>**NC_001134.8 Saccharomyces cerevisiae S288C chromosome II, complete sequence
+
+**\>**NC_001135.5 Saccharomyces cerevisiae S288C chromosome III, complete sequence
+
+**\>**NC_001136.10 Saccharomyces cerevisiae S288C chromosome IV, complete sequence
+
+**\>**NC_001137.3 Saccharomyces cerevisiae S288C chromosome V, complete sequence
+
+**\>**NC_001138.5 Saccharomyces cerevisiae S288C chromosome VI, complete sequence
+
+**\>**NC_001139.9 Saccharomyces cerevisiae S288C chromosome VII, complete sequence
+
+**\>**NC_001140.6 Saccharomyces cerevisiae S288C chromosome VIII, complete sequence
+
+**\>**NC_001141.2 Saccharomyces cerevisiae S288C chromosome IX, complete sequence
+
+**\>**NC_001142.9 Saccharomyces cerevisiae S288C chromosome X, complete sequence
+
+**\>**NC_001143.9 Saccharomyces cerevisiae S288C chromosome XI, complete sequence
+
+**\>**NC_001144.5 Saccharomyces cerevisiae S288C chromosome XII, complete sequence
+
+**\>**NC_001145.3 Saccharomyces cerevisiae S288C chromosome XIII, complete sequence
+
+**\>**NC_001146.8 Saccharomyces cerevisiae S288C chromosome XIV, complete sequence
+
+**\>**NC_001147.6 Saccharomyces cerevisiae S288C chromosome XV, complete sequence
+
+**\>**NC_001148.4 Saccharomyces cerevisiae S288C chromosome XVI, complete sequence
+
+**\>**NC_001224.1 Saccharomyces cerevisiae S288c mitochondrion, complete genome
+
+En NCBI:
+
+- Número de cromosomas: 16
+- Número de scaffolds: 16
+- Número de contigs: 16
